@@ -1,11 +1,15 @@
 // backend/controllers/proveedorController.js
 const { pool } = require('../config/db');
 
-// Obtener todos los proveedores
+// 1. OBTENER TODOS LOS PROVEEDORES (Solo los activos)
 exports.getProveedores = async (req, res) => {
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT "IdProveedor", "NomProveedor", "RFC" FROM "Proveedores" WHERE "BajaLogica" = TRUE ORDER BY "NomProveedor" ASC');
+    // CORRECCIÓN: Buscamos donde BajaLogica sea FALSE (o nulo)
+    // Es decir, traeme los que "NO están dados de baja"
+    const result = await client.query(
+        'SELECT "IdProveedor", "NomProveedor", "RFC" FROM "Proveedores" WHERE "BajaLogica" IS NOT TRUE ORDER BY "NomProveedor" ASC'
+    );
     res.json(result.rows);
   } catch (error) {
     console.error('Error al obtener proveedores:', error);
@@ -15,13 +19,37 @@ exports.getProveedores = async (req, res) => {
   }
 };
 
-// Crear proveedor
+// 2. OBTENER UN PROVEEDOR POR ID
+exports.getProveedorById = async (req, res) => {
+    const { id } = req.params;
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            'SELECT "IdProveedor", "NomProveedor", "RFC" FROM "Proveedores" WHERE "IdProveedor" = $1',
+            [id]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ msg: 'Proveedor no encontrado' });
+        }
+        
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error al obtener proveedor:', error);
+        res.status(500).json({ msg: 'Error interno.' });
+    } finally {
+        client.release();
+    }
+};
+
+// 3. CREAR PROVEEDOR
 exports.createProveedor = async (req, res) => {
   const { NomProveedor, RFC } = req.body;
   const client = await pool.connect();
   try {
+    // CORRECCIÓN: Al crear, BajaLogica debe ser FALSE (Nace vivo/activo)
     const result = await client.query(
-      'INSERT INTO "Proveedores" ("NomProveedor", "RFC", "BajaLogica") VALUES ($1, $2, TRUE) RETURNING "IdProveedor", "NomProveedor", "RFC"',
+      'INSERT INTO "Proveedores" ("NomProveedor", "RFC", "BajaLogica") VALUES ($1, $2, FALSE) RETURNING "IdProveedor", "NomProveedor", "RFC"',
       [NomProveedor, RFC]
     );
     res.status(201).json(result.rows[0]);
@@ -33,7 +61,7 @@ exports.createProveedor = async (req, res) => {
   }
 };
 
-// Editar proveedor
+// 4. EDITAR PROVEEDOR
 exports.updateProveedor = async (req, res) => {
   const { id } = req.params;
   const { NomProveedor, RFC } = req.body;
@@ -52,16 +80,17 @@ exports.updateProveedor = async (req, res) => {
   }
 };
 
-// Eliminar proveedor (baja lógica)
+// 5. ELIMINAR PROVEEDOR (Baja lógica)
 exports.deleteProveedor = async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
   try {
+    // CORRECCIÓN: Para borrar, ponemos BajaLogica en TRUE
     await client.query(
-      'UPDATE "Proveedores" SET "BajaLogica" = FALSE WHERE "IdProveedor" = $1',
+      'UPDATE "Proveedores" SET "BajaLogica" = TRUE WHERE "IdProveedor" = $1',
       [id]
     );
-    res.json({ msg: 'Proveedor eliminado.' });
+    res.json({ msg: 'Proveedor eliminado correctamente.' });
   } catch (error) {
     console.error('Error al eliminar proveedor:', error);
     res.status(500).json({ msg: 'Error interno al eliminar proveedor.' });

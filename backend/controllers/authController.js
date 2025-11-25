@@ -65,7 +65,7 @@ exports.loginUser = async (req, res) => {
     try {
         // 1. Buscar usuario activo por email
         const result = await query(
-            'SELECT * FROM "Usuario" WHERE "Email" = $1 AND "BajaLogica" = TRUE', 
+            'SELECT * FROM "Usuario" WHERE "Email" = $1 AND "BajaLogica" = false', 
             [email]
         );
         const user = result.rows[0];

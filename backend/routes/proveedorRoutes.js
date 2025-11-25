@@ -4,13 +4,15 @@ const router = express.Router();
 const proveedorController = require('../controllers/proveedorController');
 const { protect } = require('../middlewares/authMiddleware');
 
-// Listar proveedores
+// 1. Listar TODOS los proveedores
 router.get('/proveedores', protect, proveedorController.getProveedores);
-// Crear proveedor
+// 2. Obtener UNO solo por ID
+router.get('/proveedores/:id', protect, proveedorController.getProveedorById);
+// 3. Crear proveedor
 router.post('/proveedores', protect, proveedorController.createProveedor);
-// Editar proveedor
+// 4. Editar proveedor
 router.put('/proveedores/:id', protect, proveedorController.updateProveedor);
-// Eliminar proveedor (baja lógica)
+// 5. Eliminar proveedor (baja lógica)
 router.delete('/proveedores/:id', protect, proveedorController.deleteProveedor);
 
 module.exports = router;

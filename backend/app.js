@@ -7,6 +7,9 @@ const authRoutes = require('./routes/authRoutes'); // Importamos las rutas de au
 const articuloRoutes = require('./routes/articuloRoutes'); 
 const movimientoRoutes = require('./routes/movimientoRoutes');
 const proveedorRoutes = require('./routes/proveedorRoutes');
+const usuariosRoutes = require('./routes/usuariosRoutes');
+const ventasRoutes = require('./routes/ventasRoutes');
+const combosRoutes = require('./routes/combosRoutes');
 
 const app = express();
 const server = http.createServer(app); // Creamos el servidor HTTP
@@ -22,7 +25,9 @@ app.use('/api', authRoutes); // Montamos las rutas de autenticación en /api
 app.use('/api', articuloRoutes); 
 app.use('/api', movimientoRoutes); 
 app.use('/api', proveedorRoutes);
-
+app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/ventas', ventasRoutes);
+app.use('/api/combos', combosRoutes);
 
 // El manejador de conexiones está en socket.js
 
