@@ -2,47 +2,43 @@ const { query } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Función para registrar un nuevo usuario (para pruebas iniciales)
 exports.registerUser = async (req, res) => {
     const { nombre, email, password } = req.body;
     
-    // Valores predeterminados para control y auditoría
-    const ClaUserMod = 1; // ID del usuario que crea (1 = Admin inicial)
+    // CORRECCIÓN 1: Auditoría inicial (usamos 1 o null si es el primer usuario)
+    const ClaUserMod = 1; 
     const NombrePcMod = 'SERVIDOR_REG';
-    const BajaLogica = true;
-
-    // **Validaciones 1: Campos Requeridos**
-    if (!nombre || !email || !password) {
-        return res.status(400).json({ msg: 'Todos los campos (nombre, email, password) son obligatorios.' });
-    }
     
-    // **Validaciones 2: Longitud mínima**
+    // CORRECCIÓN 2: El usuario debe nacer VIVO (false)
+    const BajaLogica = false; 
+
+    if (!nombre || !email || !password) {
+        return res.status(400).json({ msg: 'Todos los campos son obligatorios.' });
+    }
     if (password.length < 6) {
         return res.status(400).json({ msg: 'La contraseña debe tener al menos 6 caracteres.' });
     }
-    
-    // **Validaciones 3: Formato de Email Básico**
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         return res.status(400).json({ msg: 'El formato del email no es válido.' });
     }
 
     try {
-        // 1. Hashear la contraseña
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
-
-        // 2. Insertar en la BD, incluyendo los campos de control
+        
+        // Insertamos usando los campos correctos
         const result = await query(
             `INSERT INTO "Usuario" (
                 "Nombre", "Email", "PasswordHash", "Rol", "FechaUltMod", 
-                "ClaUserMod", "NombrePcMod", "BajaLogica"
+                "ClaUserMod", "NombrePcMod", "BajaLogica", "FechaCreacion"
             ) 
-            VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7) 
+            VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7, NOW()) 
             RETURNING *`,
             [nombre, email, passwordHash, 'ADMIN', ClaUserMod, NombrePcMod, BajaLogica]
         );
-
+        
         res.status(201).json({ msg: 'Usuario registrado exitosamente', user: result.rows[0] });
     } catch (error) {
         console.error('Error al registrar usuario:', error);
@@ -53,17 +49,14 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// Función principal de LOGIN (Funcionalidad 1)
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
-
-    // **Validaciones 1: Campos Requeridos**
+    
     if (!email || !password) {
         return res.status(400).json({ msg: 'Ingrese email y contraseña.' });
     }
 
     try {
-        // 1. Buscar usuario activo por email
         const result = await query(
             'SELECT * FROM "Usuario" WHERE "Email" = $1 AND "BajaLogica" = false', 
             [email]
@@ -74,37 +67,33 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ msg: 'Credenciales inválidas.' });
         }
 
-        // 2. Comparar la contraseña
-        const isMatch = await bcrypt.compare(password, user.PasswordHash); // Usar el campo exacto
-
+        const isMatch = await bcrypt.compare(password, user.PasswordHash);
         if (!isMatch) {
             return res.status(401).json({ msg: 'Credenciales inválidas.' });
         }
 
-        // 3. Generar el JWT
+        // CORRECCIÓN 3: Payload coincidente con la base de datos
         const payload = {
-            id: user.IdUsuario, 
-            rol: user.Rol,
-            email: user.Email
+            IdUsuario: user.IdUsuario, // <--- AHORA SÍ COINCIDE (Mayúscula)
+            Rol: user.Rol,
+            Email: user.Email
         };
 
         const token = jwt.sign(
             payload,
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '8h' } // Aumenté a 8h para que no te saque a cada rato en desarrollo
         );
 
-        // 4. Enviar el token
         res.json({
             token,
             user: {
-                id: user.IdUsuario,
-                nombre: user.Nombre,
-                email: user.Email,
-                rol: user.Rol
+                IdUsuario: user.IdUsuario, // Estandarizamos respuesta
+                Nombre: user.Nombre,
+                Email: user.Email,
+                Rol: user.Rol
             }
         });
-
     } catch (error) {
         console.error('Error en el login:', error);
         res.status(500).json({ msg: 'Error interno del servidor.' });

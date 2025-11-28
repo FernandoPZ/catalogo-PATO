@@ -5,8 +5,6 @@ const { pool } = require('../config/db');
 exports.getProveedores = async (req, res) => {
   const client = await pool.connect();
   try {
-    // CORRECCIÓN: Buscamos donde BajaLogica sea FALSE (o nulo)
-    // Es decir, traeme los que "NO están dados de baja"
     const result = await client.query(
         'SELECT "IdProveedor", "NomProveedor", "RFC" FROM "Proveedores" WHERE "BajaLogica" IS NOT TRUE ORDER BY "NomProveedor" ASC'
     );
@@ -42,16 +40,27 @@ exports.getProveedorById = async (req, res) => {
     }
 };
 
-// 3. CREAR PROVEEDOR
+// 3. CREAR PROVEEDOR (Con Auditoría)
 exports.createProveedor = async (req, res) => {
   const { NomProveedor, RFC } = req.body;
+  // OJO: Asegúrate que tu middleware 'protect' llena req.user
+  const idUsuarioLogueado = req.user.IdUsuario; 
+
   const client = await pool.connect();
   try {
-    // CORRECCIÓN: Al crear, BajaLogica debe ser FALSE (Nace vivo/activo)
-    const result = await client.query(
-      'INSERT INTO "Proveedores" ("NomProveedor", "RFC", "BajaLogica") VALUES ($1, $2, FALSE) RETURNING "IdProveedor", "NomProveedor", "RFC"',
-      [NomProveedor, RFC]
-    );
+    const query = `
+      INSERT INTO "Proveedores" 
+      ("NomProveedor", "RFC", "BajaLogica", "IdUsuarioCreacion", "FechaCreacion") 
+      VALUES ($1, $2, FALSE, $3, NOW()) 
+      RETURNING *
+    `;
+    
+    const result = await client.query(query, [
+        NomProveedor, 
+        RFC, 
+        idUsuarioLogueado
+    ]);
+    
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error al crear proveedor:', error);
@@ -61,17 +70,34 @@ exports.createProveedor = async (req, res) => {
   }
 };
 
-// 4. EDITAR PROVEEDOR
+// 4. EDITAR PROVEEDOR (CORREGIDO)
 exports.updateProveedor = async (req, res) => {
   const { id } = req.params;
   const { NomProveedor, RFC } = req.body;
+  const idUsuarioLogueado = req.user.IdUsuario; // Auditoría
+
   const client = await pool.connect();
   try {
-    await client.query(
-      'UPDATE "Proveedores" SET "NomProveedor" = $1, "RFC" = $2 WHERE "IdProveedor" = $3',
-      [NomProveedor, RFC, id]
-    );
-    res.json({ msg: 'Proveedor actualizado.' });
+    // Usamos la variable query correctamente
+    const query = `
+      UPDATE "Proveedores" 
+      SET 
+        "NomProveedor" = $1, 
+        "RFC" = $2,
+        "IdUsuarioModificacion" = $3,
+        "FechaModificacion" = NOW()
+      WHERE "IdProveedor" = $4
+      RETURNING *
+    `;
+    
+    // Pasamos los 4 parámetros en orden: Nom, RFC, IdUser, IdProv
+    const result = await client.query(query, [NomProveedor, RFC, idUsuarioLogueado, id]);
+    
+    if (result.rowCount === 0) {
+        return res.status(404).json({ msg: 'Proveedor no encontrado' });
+    }
+
+    res.json({ msg: 'Proveedor actualizado.', proveedor: result.rows[0] });
   } catch (error) {
     console.error('Error al actualizar proveedor:', error);
     res.status(500).json({ msg: 'Error interno al actualizar proveedor.' });
@@ -83,9 +109,11 @@ exports.updateProveedor = async (req, res) => {
 // 5. ELIMINAR PROVEEDOR (Baja lógica)
 exports.deleteProveedor = async (req, res) => {
   const { id } = req.params;
+  // Opcional: Podrías guardar también quién lo eliminó aquí
+  // const idUsuarioLogueado = req.user.IdUsuario;
+
   const client = await pool.connect();
   try {
-    // CORRECCIÓN: Para borrar, ponemos BajaLogica en TRUE
     await client.query(
       'UPDATE "Proveedores" SET "BajaLogica" = TRUE WHERE "IdProveedor" = $1',
       [id]

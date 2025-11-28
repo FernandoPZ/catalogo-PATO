@@ -22,6 +22,16 @@ export const getProveedores = async () => {
   }
 };
 
+export const getProveedorById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/${id}`, getAuthHeader());
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener proveedor:', error);
+    throw error;
+  }
+};
+
 export const createProveedor = async (data) => {
   try {
     const response = await axios.post(API_URL, data, getAuthHeader());
@@ -50,4 +60,12 @@ export const deleteProveedor = async (id) => {
     console.error('Error al eliminar proveedor:', error);
     throw error;
   }
+};
+
+export default {
+    getProveedores,
+    getProveedorById,
+    createProveedor,
+    updateProveedor,
+    deleteProveedor
 };

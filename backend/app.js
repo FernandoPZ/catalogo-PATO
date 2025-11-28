@@ -10,6 +10,7 @@ const proveedorRoutes = require('./routes/proveedorRoutes');
 const usuariosRoutes = require('./routes/usuariosRoutes');
 const ventasRoutes = require('./routes/ventasRoutes');
 const combosRoutes = require('./routes/combosRoutes');
+const entradasRoutes = require('./routes/entradasRoutes');
 
 const app = express();
 const server = http.createServer(app); // Creamos el servidor HTTP
@@ -28,6 +29,7 @@ app.use('/api', proveedorRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/ventas', ventasRoutes);
 app.use('/api/combos', combosRoutes);
+app.use('/api/entradas', entradasRoutes);
 
 // El manejador de conexiones está en socket.js
 

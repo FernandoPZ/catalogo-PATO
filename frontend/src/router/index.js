@@ -10,6 +10,7 @@ import ProveedorForm from '@/views/ProveedorForm.vue';
 import UsuariosView from '@/views/UsuariosView.vue';
 import UsuarioForm from '@/views/UsuarioForm.vue';
 import PuntoVentaView from '@/views/PuntoVentaView.vue';
+import EntradaForm from '@/views/EntradaForm.vue';
 
 const routes = [
   { path: '/', name: 'Articulos', component: ArticulosView, meta: { requiresAuth: true } },
@@ -24,6 +25,7 @@ const routes = [
   { path: '/usuarios/nuevo', name: 'UsuarioNuevo', component: UsuarioForm, meta: { requiresAuth: true } },
   { path: '/usuarios/editar/:id', name: 'UsuarioEditar', component: UsuarioForm, meta: { requiresAuth: true } },
   { path: '/pos', name: 'PuntoVenta', component: PuntoVentaView, meta: { requiresAuth: true } },
+  { path: '/entradas/nueva', name: 'NuevaEntrada', component: EntradaForm, meta: { requiresAuth: true } },
   { path: '/:catchAll(.*)', redirect: '/' }, 
 ];
 
@@ -32,7 +34,6 @@ const router = createRouter({
   routes,
 });
 
-// Guarda de Navegación (Protección de Rutas)
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   

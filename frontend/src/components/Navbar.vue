@@ -7,6 +7,7 @@
         <router-link to="/movimientos" class="btn btn-link minimal-btn me-2">Movimientos</router-link>
         <router-link to="/proveedores" class="btn btn-link minimal-btn me-2">Proveedores</router-link>
         <router-link to="/pos" class="btn btn-primary minimal-btn me-3 text-white fw-bold">🛒 PUNTO DE VENTA</router-link>
+        <router-link to="/entradas/nueva" class="btn btn-link minimal-btn me-2">📥 Resurtir (Compras)</router-link>
         <router-link 
           v-if="authStore.user?.rol === 'ADMIN'" 
           to="/usuarios" 
