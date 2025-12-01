@@ -4,7 +4,7 @@
             <div class="card-body p-4">
                 <div class="row align-items-end">
                     <div class="col-md-6">
-                        <h4 class="fw-bold mb-3">🛒 Registrar Entrada de Mercancía</h4>
+                        <h4 class="fw-bold mb-3">Registrar Entrada de Mercancía</h4>
                         <label class="form-label fw-bold small text-muted">Seleccionar Proveedor</label>
                         <select v-model="idProveedor" class="form-select minimal-input">
                             <option value="" disabled selected>-- Elige un proveedor --</option>
@@ -25,7 +25,7 @@
             <div class="col-md-5">
                 <div class="card border-0 shadow-sm h-100 minimal-card">
                     <div class="card-header bg-white border-0 pt-3">
-                        <input v-model="busqueda" type="text" class="form-control minimal-input" placeholder="🔍 Buscar producto para agregar...">
+                        <input v-model="busqueda" type="text" class="form-control minimal-input" placeholder="Buscar producto para agregar...">
                     </div>
                     <div class="card-body overflow-auto" style="max-height: 500px;">
                         <div class="list-group list-group-flush">
@@ -112,12 +112,8 @@ import articuloService from '@/services/articuloService';
 import entradaService from '@/services/entradaService';
 
 const router = useRouter();
-
-// Datos Maestros
 const proveedores = ref([]);
 const articulos = ref([]);
-
-// Formulario
 const idProveedor = ref("");
 const comentarios = ref("");
 const listaEntrada = ref([]);
@@ -146,7 +142,6 @@ const totalEntrada = computed(() => {
     return listaEntrada.value.reduce((acc, item) => acc + (item.Cantidad * item.Costo), 0);
 });
 
-// Lógica de UI
 const agregarALista = (articulo) => {
     const existe = listaEntrada.value.find(i => i.IdArticulo === articulo.IdArticulo);
     if (existe) {
@@ -165,12 +160,10 @@ const quitarDeLista = (index) => {
     listaEntrada.value.splice(index, 1);
 };
 
-// Guardar
 const guardarEntrada = async () => {
     if (!idProveedor.value) return alert("Selecciona un proveedor");
     if (listaEntrada.value.length === 0) return alert("Agrega productos");
     
-    // Validar costos
     const costosInvalidos = listaEntrada.value.some(i => i.Costo <= 0);
     if (costosInvalidos && !confirm("Algunos productos tienen Costo $0. ¿Continuar así?")) return;
 
@@ -182,12 +175,12 @@ const guardarEntrada = async () => {
             IdProveedor: idProveedor.value,
             Total: totalEntrada.value,
             Comentarios: comentarios.value,
-            Productos: listaEntrada.value // Backend espera array con {IdArticulo, Cantidad, Costo}
+            Productos: listaEntrada.value
         };
 
         await entradaService.createEntrada(payload);
         alert("¡Entrada registrada exitosamente!");
-        router.push('/articulos'); // Volver al inventario para ver el stock nuevo
+        router.push('/articulos');
     } catch (error) {
         console.error(error);
         alert("Error al registrar entrada");

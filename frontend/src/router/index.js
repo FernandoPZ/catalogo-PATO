@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
+import DashboardView from '@/views/DashboardView.vue';
 import LoginView from '@/views/LoginView.vue';
 import ArticulosView from '@/views/ArticulosView.vue';
 import ArticuloForm from '@/views/ArticuloForm.vue';
@@ -11,9 +12,14 @@ import UsuariosView from '@/views/UsuariosView.vue';
 import UsuarioForm from '@/views/UsuarioForm.vue';
 import PuntoVentaView from '@/views/PuntoVentaView.vue';
 import EntradaForm from '@/views/EntradaForm.vue';
+import CombosView from '@/views/CombosView.vue';
+import ComboForm from '@/views/ComboForm.vue';
+import HistorialVentas from '@/views/HistorialVentas.vue';
+import HistorialCompras from '@/views/HistorialCompras.vue';
 
 const routes = [
-  { path: '/', name: 'Articulos', component: ArticulosView, meta: { requiresAuth: true } },
+  { path: '/', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
+  { path: '/articulos', name: 'Articulos', component: ArticulosView, meta: { requiresAuth: true } },
   { path: '/login', name: 'Login', component: LoginView },
   { path: '/articulos/nuevo', name: 'ArticuloNuevo', component: ArticuloForm, meta: { requiresAuth: true } },
   { path: '/articulos/editar/:id', name: 'ArticuloEditar', component: ArticuloForm, meta: { requiresAuth: true } },
@@ -26,7 +32,12 @@ const routes = [
   { path: '/usuarios/editar/:id', name: 'UsuarioEditar', component: UsuarioForm, meta: { requiresAuth: true } },
   { path: '/pos', name: 'PuntoVenta', component: PuntoVentaView, meta: { requiresAuth: true } },
   { path: '/entradas/nueva', name: 'NuevaEntrada', component: EntradaForm, meta: { requiresAuth: true } },
-  { path: '/:catchAll(.*)', redirect: '/' }, 
+  { path: '/kits', name: 'Kits', component: CombosView, meta: { requiresAuth: true } },
+  { path: '/kits/nuevo', name: 'KitNuevo', component: ComboForm, meta: { requiresAuth: true } },
+  { path: '/kits/editar/:id', name: 'KitEditar', component: ComboForm, meta: { requiresAuth: true } },
+  { path: '/historial/ventas', name: 'HistorialVentas', component: HistorialVentas, meta: { requiresAuth: true } },
+  { path: '/historial/compras', name: 'HistorialCompras', component: HistorialCompras, meta: { requiresAuth: true } },
+  { path: '/:catchAll(.*)', redirect: '/' },
 ];
 
 const router = createRouter({
