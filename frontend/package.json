@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@popperjs/core": "^2.11.8",
     "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
     "pinia": "^3.0.3",

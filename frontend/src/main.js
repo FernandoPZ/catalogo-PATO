@@ -3,6 +3,9 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router'; 
 import './style.css'; // Mantenemos la importación, pero el archivo puede estar casi vacío.
+import 'bootstrap/dist/css/bootstrap.min.css' 
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import '@fortawesome/fontawesome-free/css/all.css'
 
 const app = createApp(App);
 const pinia = createPinia();

@@ -24,7 +24,7 @@
                                     href="#" 
                                     @click.prevent="tabActiva = 'ARTICULOS'"
                                 >
-                                    📦 Artículos Individuales
+                                    Articulos
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -34,7 +34,7 @@
                                     href="#" 
                                     @click.prevent="tabActiva = 'COMBOS'"
                                 >
-                                    🎁 Ofertas y Combos
+                                    Kits
                                 </a>
                             </li>
                         </ul>
@@ -48,7 +48,7 @@
                                     <div class="card-body p-3 text-center d-flex flex-column justify-content-between">
                                         <div>
                                             <h6 class="fw-bold text-truncate" :title="articulo.NomArticulo">{{ articulo.NomArticulo }}</h6>
-                                            <p class="text-primary fw-bold mb-1">${{ 150.00 }}</p> <small class="text-muted d-block mb-2">Stock: {{ articulo.StockActual }}</small>
+                                            <p class="text-primary fw-bold mb-1">${{ Number(articulo.PrecioVenta).toFixed(2) }}</p> <small class="text-muted d-block mb-2">Stock: {{ articulo.StockActual }}</small>
                                         </div>
                                         <button 
                                             class="btn btn-sm btn-outline-primary w-100 rounded-pill"
@@ -155,23 +155,17 @@
 import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import articuloService from '@/services/articuloService';
-import comboService from '@/services/comboService'; // <--- NUEVO SERVICIO
+import comboService from '@/services/comboService';
 import ventaService from '@/services/ventaService';
 import { generarTicketPDF } from '@/utils/ticketGenerator';
 
 const authStore = useAuthStore();
-
-// Estados
 const articulos = ref([]);
-const combos = ref([]); // <--- NUEVO ESTADO
+const combos = ref([]);
 const carrito = ref([]);
 const busqueda = ref("");
 const loadingVenta = ref(false);
-const tabActiva = ref('ARTICULOS'); // 'ARTICULOS' o 'COMBOS'
-
-const PRECIO_DEMO = 150.00;
-
-// Cargar inventario y combos al iniciar
+const tabActiva = ref('ARTICULOS');
 onMounted(async () => {
     cargarDatos();
 });
@@ -189,7 +183,6 @@ const cargarDatos = async () => {
     }
 };
 
-// Filtros de búsqueda
 const articulosFiltrados = computed(() => {
     return articulos.value.filter(a => a.NomArticulo.toLowerCase().includes(busqueda.value.toLowerCase()));
 });
@@ -197,21 +190,15 @@ const combosFiltrados = computed(() => {
     return combos.value.filter(c => c.Nombre.toLowerCase().includes(busqueda.value.toLowerCase()));
 });
 
-// Total calculado
 const totalVenta = computed(() => {
     return carrito.value.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
 });
 
-// --- LÓGICA DEL CARRITO (ADAPTADA) ---
-
 const agregarAlCarrito = (item, tipo) => {
-    // Normalizamos los datos porque Articulo y Combo tienen nombres de propiedades distintos
     const id = tipo === 'ARTICULO' ? item.IdArticulo : item.IdCombo;
     const nombre = tipo === 'ARTICULO' ? item.NomArticulo : item.Nombre;
-    const precio = tipo === 'ARTICULO' ? PRECIO_DEMO : Number(item.Precio); // Precio del combo viene de BD
-    const maxStock = tipo === 'ARTICULO' ? item.StockActual : 9999; // Combos no tienen stock directo simple
-
-    // Verificar si ya existe
+    const precio = tipo === 'ARTICULO' ? Number(item.PrecioVenta) : Number(item.Precio);
+    const maxStock = tipo === 'ARTICULO' ? item.StockActual : 9999;
     const existe = carrito.value.find(i => i.id === id && i.tipo === tipo);
 
     if (existe) {
@@ -222,13 +209,13 @@ const agregarAlCarrito = (item, tipo) => {
         }
     } else {
         carrito.value.push({
-            id,       // ID Genérico
-            tipo,     // 'ARTICULO' o 'COMBO'
+            id,
+            tipo,
             nombre,
             precio,
             cantidad: 1,
             maxStock,
-            NomArticulo: nombre // Para compatibilidad con el generador de PDF
+            NomArticulo: nombre
         });
     }
 };
@@ -251,8 +238,6 @@ const eliminarDelCarrito = (index) => {
     carrito.value.splice(index, 1);
 };
 
-// --- PROCESAR VENTA ---
-
 const procesarVenta = async () => {
     if (!confirm(`¿Confirmar venta por $${totalVenta.value.toFixed(2)}?`)) return;
 
@@ -261,10 +246,9 @@ const procesarVenta = async () => {
         const payload = {
             idUsuario: authStore.user.IdUsuario,
             total: totalVenta.value,
-            // Enviamos el carrito tal cual, el backend ya sabe leer 'id' y 'tipo'
             productos: carrito.value.map(item => ({
-                id: item.id,       // ID Genérico
-                tipo: item.tipo,   // 'ARTICULO' o 'COMBO'
+                id: item.id,
+                tipo: item.tipo,
                 cantidad: item.cantidad,
                 precio: item.precio
             }))
@@ -272,7 +256,6 @@ const procesarVenta = async () => {
 
         const respuesta = await ventaService.crearVenta(payload);
 
-        // Generar Ticket
         generarTicketPDF(
             respuesta.idVenta, 
             authStore.user.Nombre || 'Cajero', 
@@ -282,7 +265,7 @@ const procesarVenta = async () => {
         
         alert("¡Venta exitosa!");
         carrito.value = []; 
-        cargarDatos(); // Recargar stock
+        cargarDatos();
 
     } catch (error) {
         console.error(error);

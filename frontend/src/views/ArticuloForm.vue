@@ -31,6 +31,22 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-6">
+                                <label for="precio" class="form-label text-success fw-bold">Precio de Venta ($)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-success border-end-0 fw-bold">$</span>
+                                    <input 
+                                        type="number" 
+                                        id="precio" 
+                                        v-model.number="form.PrecioVenta" 
+                                        class="form-control minimal-input border-start-0" 
+                                        step="0.50" 
+                                        min="0" 
+                                        placeholder="0.00"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
                                 <label for="unidad" class="form-label">Unidad de Medida (Nombre)</label>
                                 <input type="text" id="unidad" v-model="form.NombreUnidad" class="form-control minimal-input" required>
                             </div>
@@ -67,50 +83,38 @@ import { getProveedores } from '@/services/proveedorService';
 
 const route = useRoute();
 const router = useRouter();
-
 const isEditing = computed(() => !!route.params.id);
 const itemId = computed(() => route.params.id);
-
 const form = reactive({
-    // Propiedades del Artículo
     IdArticulo: null,
     NomArticulo: '', 
-    CodArticulo: '', 
+    CodArticulo: '',
+    PrecioVenta: 0,
     StockActual: 0, 
     IdProveedor: '',      
     CantidadMinima: 0,
     CantidadMaxima: 0,
     NombreUnidad: '', 
 });
-
 const proveedores = ref([]);
-
 const loading = ref(false);
 const isSaving = ref(false);
 const errorMsg = ref(null);
 const successMsg = ref(null);
-
-// Lógica de carga para modo Edición
 const loadItem = async () => {
     loading.value = true;
     errorMsg.value = null;
     try {
         const item = await articuloService.getArticuloById(itemId.value);
-        
-        // Mapear los datos de la respuesta al formulario
         form.IdArticulo = item.IdArticulo;
         form.NomArticulo = item.NomArticulo;
         form.StockActual = item.StockActual;
-        
-        // Cargar los campos nuevos
+        form.PrecioVenta = Number(item.PrecioVenta);
         form.CodArticulo = item.CodArticulo;
         form.IdProveedor = item.IdProveedor;
-
-        // Asignar los límites de CfgStock
         form.CantidadMinima = item.CantidadMinima;
         form.CantidadMaxima = item.CantidadMaxima;
         form.NombreUnidad = item.NombreUnidad;
-        
     } catch (err) {
         errorMsg.value = "Error al cargar el artículo. Puede que no exista o que la sesión haya expirado.";
         console.error(err);
@@ -119,7 +123,6 @@ const loadItem = async () => {
     }
 };
 
-// Lógica de envío del formulario
 const handleSubmit = async () => {
     isSaving.value = true;
     errorMsg.value = null;
@@ -129,37 +132,27 @@ const handleSubmit = async () => {
         let response;
         const dataToSend = {
             NomArticulo: form.NomArticulo,
-            
-            // CAMPOS ENVIADOS AL BACKEND
             CodArticulo: form.CodArticulo, 
             IdProveedor: form.IdProveedor,
-            
+            PrecioVenta: form.PrecioVenta,
             CantidadMinima: form.CantidadMinima,
             CantidadMaxima: form.CantidadMaxima,
             NombreUnidad: form.NombreUnidad
         };
 
         if (isEditing.value) {
-            // Modo Edición (PUT)
             response = await articuloService.updateArticulo(itemId.value, dataToSend);
             successMsg.value = `Artículo actualizado exitosamente.`;
-            
-            // Pequeña espera para mostrar el mensaje y recargar los datos
             setTimeout(loadItem, 1000); 
-
         } else {
-            // Modo Creación (POST)
             response = await articuloService.createArticulo(dataToSend);
             successMsg.value = `Artículo creado con ID ${response.IdArticulo}.`;
-            
-            // Redirigir a la lista de artículos
             setTimeout(() => {
                 router.push({ name: 'Articulos' });
             }, 1500);
         }
 
     } catch (err) {
-        // Mostrar mensaje de error del backend si existe (ej. validaciones)
         errorMsg.value = err.response?.data?.msg || 'Error desconocido al procesar la solicitud.';
         console.error("Error en el formulario:", err);
     } finally {
@@ -167,7 +160,6 @@ const handleSubmit = async () => {
     }
 };
 
-// Cargar proveedores y datos al montar
 onMounted(async () => {
     try {
         proveedores.value = await getProveedores();
@@ -181,7 +173,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Estilos locales para deshabilitar mientras guarda */
 .opacity-50 {
     opacity: 0.5;
     pointer-events: none;

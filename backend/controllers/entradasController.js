@@ -1,6 +1,5 @@
 const { pool } = require('../config/db');
 
-// LISTAR ENTRADAS
 exports.getEntradas = async (req, res) => {
     const client = await pool.connect();
     try {
@@ -20,15 +19,12 @@ exports.getEntradas = async (req, res) => {
         client.release();
     }
 };
-
-// CREAR ENTRADA (AUMENTAR STOCK)
 exports.createEntrada = async (req, res) => {
     const client = await pool.connect();
     try {
         const { IdProveedor, Total, Productos, Comentarios } = req.body;
         const IdUsuario = req.user.IdUsuario;
         await client.query('BEGIN');
-        // 1. Insertar Encabezado
         const entradaQuery = `
             INSERT INTO "Entradas" ("IdProveedor", "Total", "Comentarios", "IdUsuarioCreacion", "Fecha")
             VALUES ($1, $2, $3, $4, NOW())
@@ -36,18 +32,13 @@ exports.createEntrada = async (req, res) => {
         `;
         const entradaRes = await client.query(entradaQuery, [IdProveedor, Total, Comentarios, IdUsuario]);
         const IdEntrada = entradaRes.rows[0].IdEntrada;
-
-        // 2. Procesar Productos
         for (const prod of Productos) {
-            // A. Insertar Detalle
             const detalleQuery = `
                 INSERT INTO "DetalleEntradas" ("IdEntrada", "IdArticulo", "Cantidad", "CostoUnitario", "Subtotal")
                 VALUES ($1, $2, $3, $4, $5)
             `;
             const subtotal = prod.Cantidad * prod.Costo;
             await client.query(detalleQuery, [IdEntrada, prod.IdArticulo, prod.Cantidad, prod.Costo, subtotal]);
-
-            // B. AUMENTAR STOCK (La clave del módulo)
             const stockQuery = `
                 UPDATE "Articulos"
                 SET 
