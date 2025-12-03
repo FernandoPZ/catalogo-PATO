@@ -158,6 +158,9 @@ import articuloService from '@/services/articuloService';
 import comboService from '@/services/comboService';
 import ventaService from '@/services/ventaService';
 import { generarTicketPDF } from '@/utils/ticketGenerator';
+import logoImg from '@/assets/Logo01.png';
+import marcImg from '@/assets/Logo02.png';
+import instaImg from '@/assets/Instagram.png';
 
 const authStore = useAuthStore();
 const articulos = ref([]);
@@ -260,7 +263,10 @@ const procesarVenta = async () => {
             respuesta.idVenta, 
             authStore.user.Nombre || 'Cajero', 
             carrito.value, 
-            totalVenta.value
+            totalVenta.value,
+            logoImg,
+            marcImg,
+            instaImg
         );
         
         alert("¡Venta exitosa!");
