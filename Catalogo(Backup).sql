@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict qPNicwbgkPb222uKnvClqvcnk4GfN1w90Kbym3FAqgRfVeWTFnLu4yTT0vebUfb
+\restrict fPN3HVPHgxPP9TbW62pb87FH4BSCroKOD3s9DsdZOsJG7vFjgP1S1jnaZOqOLaW
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
--- Started on 2025-12-01 18:09:58
+-- Started on 2025-12-08 17:49:18
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -70,7 +70,7 @@ CREATE SEQUENCE public."Articulos_IdArticulo_seq"
 ALTER SEQUENCE public."Articulos_IdArticulo_seq" OWNER TO postgres;
 
 --
--- TOC entry 5181 (class 0 OID 0)
+-- TOC entry 5205 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: Articulos_IdArticulo_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -114,7 +114,7 @@ CREATE SEQUENCE public."CfgStock_IdCfgStock_seq"
 ALTER SEQUENCE public."CfgStock_IdCfgStock_seq" OWNER TO postgres;
 
 --
--- TOC entry 5182 (class 0 OID 0)
+-- TOC entry 5206 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: CfgStock_IdCfgStock_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -159,12 +159,55 @@ CREATE SEQUENCE public."Combos_IdCombo_seq"
 ALTER SEQUENCE public."Combos_IdCombo_seq" OWNER TO postgres;
 
 --
--- TOC entry 5183 (class 0 OID 0)
+-- TOC entry 5207 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: Combos_IdCombo_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public."Combos_IdCombo_seq" OWNED BY public."Combos"."IdCombo";
+
+
+--
+-- TOC entry 244 (class 1259 OID 16731)
+-- Name: Configuracion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Configuracion" (
+    "IdConfig" integer NOT NULL,
+    "NombreTienda" text DEFAULT 'Mi Tienda'::text,
+    "Direccion" text,
+    "Telefono" text,
+    "MensajeTicket" text DEFAULT '¡Gracias por su compra!'::text,
+    "RedSocial" text,
+    "LogoUrl" text
+);
+
+
+ALTER TABLE public."Configuracion" OWNER TO postgres;
+
+--
+-- TOC entry 243 (class 1259 OID 16730)
+-- Name: Configuracion_IdConfig_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."Configuracion_IdConfig_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."Configuracion_IdConfig_seq" OWNER TO postgres;
+
+--
+-- TOC entry 5208 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: Configuracion_IdConfig_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."Configuracion_IdConfig_seq" OWNED BY public."Configuracion"."IdConfig";
 
 
 --
@@ -199,7 +242,7 @@ CREATE SEQUENCE public."DetalleCombos_IdDetalleCombo_seq"
 ALTER SEQUENCE public."DetalleCombos_IdDetalleCombo_seq" OWNER TO postgres;
 
 --
--- TOC entry 5184 (class 0 OID 0)
+-- TOC entry 5209 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: DetalleCombos_IdDetalleCombo_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -241,7 +284,7 @@ CREATE SEQUENCE public."DetalleEntradas_IdDetalleEntrada_seq"
 ALTER SEQUENCE public."DetalleEntradas_IdDetalleEntrada_seq" OWNER TO postgres;
 
 --
--- TOC entry 5185 (class 0 OID 0)
+-- TOC entry 5210 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: DetalleEntradas_IdDetalleEntrada_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -284,7 +327,7 @@ CREATE SEQUENCE public."DetalleVentas_IdDetalle_seq"
 ALTER SEQUENCE public."DetalleVentas_IdDetalle_seq" OWNER TO postgres;
 
 --
--- TOC entry 5186 (class 0 OID 0)
+-- TOC entry 5211 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: DetalleVentas_IdDetalle_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -327,7 +370,7 @@ CREATE SEQUENCE public."Entradas_IdEntrada_seq"
 ALTER SEQUENCE public."Entradas_IdEntrada_seq" OWNER TO postgres;
 
 --
--- TOC entry 5187 (class 0 OID 0)
+-- TOC entry 5212 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: Entradas_IdEntrada_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -374,12 +417,52 @@ CREATE SEQUENCE public."Proveedores_IdProveedor_seq"
 ALTER SEQUENCE public."Proveedores_IdProveedor_seq" OWNER TO postgres;
 
 --
--- TOC entry 5188 (class 0 OID 0)
+-- TOC entry 5213 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: Proveedores_IdProveedor_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public."Proveedores_IdProveedor_seq" OWNED BY public."Proveedores"."IdProveedor";
+
+
+--
+-- TOC entry 246 (class 1259 OID 16743)
+-- Name: PuntosEntrega; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."PuntosEntrega" (
+    "IdPunto" integer NOT NULL,
+    "NombrePunto" text NOT NULL,
+    "LinkGoogleMaps" text NOT NULL,
+    "Activo" boolean DEFAULT true
+);
+
+
+ALTER TABLE public."PuntosEntrega" OWNER TO postgres;
+
+--
+-- TOC entry 245 (class 1259 OID 16742)
+-- Name: PuntosEntrega_IdPunto_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."PuntosEntrega_IdPunto_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PuntosEntrega_IdPunto_seq" OWNER TO postgres;
+
+--
+-- TOC entry 5214 (class 0 OID 0)
+-- Dependencies: 245
+-- Name: PuntosEntrega_IdPunto_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."PuntosEntrega_IdPunto_seq" OWNED BY public."PuntosEntrega"."IdPunto";
 
 
 --
@@ -419,7 +502,7 @@ CREATE SEQUENCE public."Salidas_IdSalida_seq"
 ALTER SEQUENCE public."Salidas_IdSalida_seq" OWNER TO postgres;
 
 --
--- TOC entry 5189 (class 0 OID 0)
+-- TOC entry 5215 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: Salidas_IdSalida_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -468,7 +551,7 @@ CREATE SEQUENCE public."Usuario_IdUsuario_seq"
 ALTER SEQUENCE public."Usuario_IdUsuario_seq" OWNER TO postgres;
 
 --
--- TOC entry 5190 (class 0 OID 0)
+-- TOC entry 5216 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: Usuario_IdUsuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -486,7 +569,9 @@ CREATE TABLE public."Ventas" (
     "Fecha" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     "Total" numeric(10,2) NOT NULL,
     "IdUsuario" integer,
-    "Estado" character varying(20) DEFAULT 'COMPLETADA'::character varying
+    "Estado" character varying(20) DEFAULT 'COMPLETADA'::character varying,
+    "ClienteNombre" text,
+    "IdPuntoEntrega" integer
 );
 
 
@@ -509,7 +594,7 @@ CREATE SEQUENCE public."Ventas_IdVenta_seq"
 ALTER SEQUENCE public."Ventas_IdVenta_seq" OWNER TO postgres;
 
 --
--- TOC entry 5191 (class 0 OID 0)
+-- TOC entry 5217 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: Ventas_IdVenta_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -550,7 +635,7 @@ CREATE SEQUENCE public.bitacora_actividades_id_seq
 ALTER SEQUENCE public.bitacora_actividades_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5192 (class 0 OID 0)
+-- TOC entry 5218 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: bitacora_actividades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -559,7 +644,7 @@ ALTER SEQUENCE public.bitacora_actividades_id_seq OWNED BY public.bitacora_activ
 
 
 --
--- TOC entry 4911 (class 2604 OID 16515)
+-- TOC entry 4921 (class 2604 OID 16515)
 -- Name: Articulos IdArticulo; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -567,7 +652,7 @@ ALTER TABLE ONLY public."Articulos" ALTER COLUMN "IdArticulo" SET DEFAULT nextva
 
 
 --
--- TOC entry 4919 (class 2604 OID 16516)
+-- TOC entry 4929 (class 2604 OID 16516)
 -- Name: CfgStock IdCfgStock; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -575,7 +660,7 @@ ALTER TABLE ONLY public."CfgStock" ALTER COLUMN "IdCfgStock" SET DEFAULT nextval
 
 
 --
--- TOC entry 4942 (class 2604 OID 16579)
+-- TOC entry 4952 (class 2604 OID 16579)
 -- Name: Combos IdCombo; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -583,7 +668,15 @@ ALTER TABLE ONLY public."Combos" ALTER COLUMN "IdCombo" SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4945 (class 2604 OID 16590)
+-- TOC entry 4961 (class 2604 OID 16734)
+-- Name: Configuracion IdConfig; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Configuracion" ALTER COLUMN "IdConfig" SET DEFAULT nextval('public."Configuracion_IdConfig_seq"'::regclass);
+
+
+--
+-- TOC entry 4955 (class 2604 OID 16590)
 -- Name: DetalleCombos IdDetalleCombo; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -591,7 +684,7 @@ ALTER TABLE ONLY public."DetalleCombos" ALTER COLUMN "IdDetalleCombo" SET DEFAUL
 
 
 --
--- TOC entry 4950 (class 2604 OID 16710)
+-- TOC entry 4960 (class 2604 OID 16710)
 -- Name: DetalleEntradas IdDetalleEntrada; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -599,7 +692,7 @@ ALTER TABLE ONLY public."DetalleEntradas" ALTER COLUMN "IdDetalleEntrada" SET DE
 
 
 --
--- TOC entry 4941 (class 2604 OID 16558)
+-- TOC entry 4951 (class 2604 OID 16558)
 -- Name: DetalleVentas IdDetalle; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -607,7 +700,7 @@ ALTER TABLE ONLY public."DetalleVentas" ALTER COLUMN "IdDetalle" SET DEFAULT nex
 
 
 --
--- TOC entry 4947 (class 2604 OID 16687)
+-- TOC entry 4957 (class 2604 OID 16687)
 -- Name: Entradas IdEntrada; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -615,7 +708,7 @@ ALTER TABLE ONLY public."Entradas" ALTER COLUMN "IdEntrada" SET DEFAULT nextval(
 
 
 --
--- TOC entry 4923 (class 2604 OID 16518)
+-- TOC entry 4933 (class 2604 OID 16518)
 -- Name: Proveedores IdProveedor; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -623,7 +716,15 @@ ALTER TABLE ONLY public."Proveedores" ALTER COLUMN "IdProveedor" SET DEFAULT nex
 
 
 --
--- TOC entry 4927 (class 2604 OID 16519)
+-- TOC entry 4964 (class 2604 OID 16746)
+-- Name: PuntosEntrega IdPunto; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."PuntosEntrega" ALTER COLUMN "IdPunto" SET DEFAULT nextval('public."PuntosEntrega_IdPunto_seq"'::regclass);
+
+
+--
+-- TOC entry 4937 (class 2604 OID 16519)
 -- Name: Salidas IdSalida; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -631,7 +732,7 @@ ALTER TABLE ONLY public."Salidas" ALTER COLUMN "IdSalida" SET DEFAULT nextval('p
 
 
 --
--- TOC entry 4931 (class 2604 OID 16520)
+-- TOC entry 4941 (class 2604 OID 16520)
 -- Name: Usuario IdUsuario; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -639,7 +740,7 @@ ALTER TABLE ONLY public."Usuario" ALTER COLUMN "IdUsuario" SET DEFAULT nextval('
 
 
 --
--- TOC entry 4938 (class 2604 OID 16542)
+-- TOC entry 4948 (class 2604 OID 16542)
 -- Name: Ventas IdVenta; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -647,7 +748,7 @@ ALTER TABLE ONLY public."Ventas" ALTER COLUMN "IdVenta" SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4936 (class 2604 OID 16525)
+-- TOC entry 4946 (class 2604 OID 16525)
 -- Name: bitacora_actividades id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -655,23 +756,23 @@ ALTER TABLE ONLY public.bitacora_actividades ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 5152 (class 0 OID 16389)
+-- TOC entry 5172 (class 0 OID 16389)
 -- Dependencies: 219
 -- Data for Name: Articulos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public."Articulos" ("IdArticulo", "CodArticulo", "NomArticulo", "StockActual", "IdProveedor", "IdCfgStock", "BajaLogica", "FechaAlta", "FechaUltMod", "ClaUserMod", "NombrePcMod", "IdUsuarioCreacion", "FechaCreacion", "IdUsuarioModificacion", "FechaModificacion", "PrecioVenta", "CostoPromedio") FROM stdin;
+1	LAP-X200	Laptop X200 - Modelo 2024	7	3	1	f	2025-09-29 16:04:04.780346	2025-11-21 11:32:53.435869	4	WEB_APP	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:55:17.190509	2050.00	0.00
+4	LP-004	Lampara	70	3	4	f	2025-09-29 19:12:56.341398	2025-11-21 11:32:42.755916	4	WEB_APP	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:54:55.16428	25.00	0.00
+5	LOP-009	Loseta modelo cajeta	0	3	5	f	2025-09-29 19:33:29.662465	2025-09-29 19:54:57.589164	3	WEB_APP_MOV	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:55:37.81255	20.00	0.00
 2	CLV-001	Clavos 1/4	0	1	2	t	2025-09-29 18:05:27.347125	2025-09-29 18:07:34.355174	3	WEB_APP	\N	2025-11-26 10:27:08.003785	\N	\N	0.00	0.00
 3	TBL-0004	Tabla roca	5	1	3	t	2025-09-29 18:24:23.702177	2025-09-29 20:01:01.801483	3	WEB_APP	\N	2025-11-26 10:27:08.003785	\N	\N	0.00	0.00
-4	LP-004	Lampara	99	3	4	f	2025-09-29 19:12:56.341398	2025-11-21 11:32:42.755916	4	WEB_APP	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:54:55.16428	25.00	0.00
-6	NUEVO-008	Oso	3	3	6	f	2025-09-29 19:54:40.162427	2025-09-29 19:55:26.045424	3	WEB_APP_MOV	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:55:54.649965	50.00	0.00
-1	LAP-X200	Laptop X200 - Modelo 2024	10	3	1	f	2025-09-29 16:04:04.780346	2025-11-21 11:32:53.435869	4	WEB_APP	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:55:17.190509	2050.00	0.00
-5	LOP-009	Loseta modelo cajeta	8	3	5	f	2025-09-29 19:33:29.662465	2025-09-29 19:54:57.589164	3	WEB_APP_MOV	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:55:37.81255	20.00	0.00
+6	NUEVO-008	Oso	0	3	6	f	2025-09-29 19:54:40.162427	2025-09-29 19:55:26.045424	3	WEB_APP_MOV	\N	2025-11-26 10:27:08.003785	4	2025-12-01 17:55:54.649965	50.00	0.00
 \.
 
 
 --
--- TOC entry 5154 (class 0 OID 16401)
+-- TOC entry 5174 (class 0 OID 16401)
 -- Dependencies: 221
 -- Data for Name: CfgStock; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -687,7 +788,7 @@ COPY public."CfgStock" ("IdCfgStock", "CantidadMaxima", "CantidadMinima", "BajaL
 
 
 --
--- TOC entry 5169 (class 0 OID 16576)
+-- TOC entry 5189 (class 0 OID 16576)
 -- Dependencies: 236
 -- Data for Name: Combos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -699,7 +800,18 @@ COPY public."Combos" ("IdCombo", "Nombre", "Codigo", "Precio", "Activo", "IdUsua
 
 
 --
--- TOC entry 5171 (class 0 OID 16587)
+-- TOC entry 5197 (class 0 OID 16731)
+-- Dependencies: 244
+-- Data for Name: Configuracion; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Configuracion" ("IdConfig", "NombreTienda", "Direccion", "Telefono", "MensajeTicket", "RedSocial", "LogoUrl") FROM stdin;
+1	Aura creativa	Calle falta numero algo	7714306643	Gracias por su preferencia	@aura.sublimados	\N
+\.
+
+
+--
+-- TOC entry 5191 (class 0 OID 16587)
 -- Dependencies: 238
 -- Data for Name: DetalleCombos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -714,7 +826,7 @@ COPY public."DetalleCombos" ("IdDetalleCombo", "IdCombo", "IdArticulo", "Cantida
 
 
 --
--- TOC entry 5175 (class 0 OID 16707)
+-- TOC entry 5195 (class 0 OID 16707)
 -- Dependencies: 242
 -- Data for Name: DetalleEntradas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -726,7 +838,7 @@ COPY public."DetalleEntradas" ("IdDetalleEntrada", "IdEntrada", "IdArticulo", "C
 
 
 --
--- TOC entry 5167 (class 0 OID 16555)
+-- TOC entry 5187 (class 0 OID 16555)
 -- Dependencies: 234
 -- Data for Name: DetalleVentas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -750,11 +862,43 @@ COPY public."DetalleVentas" ("IdDetalle", "IdVenta", "IdArticulo", "Cantidad", "
 16	9	1	1	150.00	150.00	\N
 17	10	1	1	2050.00	2050.00	\N
 18	10	5	1	20.00	20.00	\N
+19	11	6	1	50.00	50.00	\N
+20	12	5	5	20.00	100.00	\N
+21	13	4	1	25.00	25.00	\N
+22	14	4	3	25.00	75.00	\N
+23	15	4	5	25.00	125.00	\N
+24	15	6	2	50.00	100.00	\N
+25	15	1	1	2050.00	2050.00	\N
+26	16	4	1	25.00	25.00	\N
+27	17	4	1	25.00	25.00	\N
+28	18	4	1	25.00	25.00	\N
+29	19	4	1	25.00	25.00	\N
+30	19	1	1	2050.00	2050.00	\N
+31	19	5	1	20.00	20.00	\N
+32	20	4	1	25.00	25.00	\N
+33	21	4	1	25.00	25.00	\N
+34	22	4	1	25.00	25.00	\N
+35	23	4	1	25.00	25.00	\N
+36	24	4	1	25.00	25.00	\N
+37	25	4	1	25.00	25.00	\N
+38	26	4	1	25.00	25.00	\N
+39	27	4	1	25.00	25.00	\N
+40	28	4	1	25.00	25.00	\N
+41	29	4	1	25.00	25.00	\N
+42	30	4	1	25.00	25.00	\N
+43	31	4	1	25.00	25.00	\N
+44	32	4	1	25.00	25.00	\N
+45	33	4	1	25.00	25.00	\N
+46	34	4	1	25.00	25.00	\N
+47	34	1	1	2050.00	2050.00	\N
+48	34	5	1	20.00	20.00	\N
+49	35	4	1	25.00	25.00	\N
+50	35	5	1	20.00	20.00	\N
 \.
 
 
 --
--- TOC entry 5173 (class 0 OID 16684)
+-- TOC entry 5193 (class 0 OID 16684)
 -- Dependencies: 240
 -- Data for Name: Entradas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -765,7 +909,7 @@ COPY public."Entradas" ("IdEntrada", "IdProveedor", "Fecha", "Total", "Comentari
 
 
 --
--- TOC entry 5156 (class 0 OID 16423)
+-- TOC entry 5176 (class 0 OID 16423)
 -- Dependencies: 223
 -- Data for Name: Proveedores; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -778,7 +922,18 @@ COPY public."Proveedores" ("IdProveedor", "NomProveedor", "RFC", "BajaLogica", "
 
 
 --
--- TOC entry 5158 (class 0 OID 16431)
+-- TOC entry 5199 (class 0 OID 16743)
+-- Dependencies: 246
+-- Data for Name: PuntosEntrega; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."PuntosEntrega" ("IdPunto", "NombrePunto", "LinkGoogleMaps", "Activo") FROM stdin;
+1	Pachuca	https://maps.app.goo.gl/YaxkUSA4dFX51geD8	t
+\.
+
+
+--
+-- TOC entry 5178 (class 0 OID 16431)
 -- Dependencies: 225
 -- Data for Name: Salidas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -794,7 +949,7 @@ COPY public."Salidas" ("IdSalida", "IdArticulo", "Cantidad", "Comentarios", "Fec
 
 
 --
--- TOC entry 5160 (class 0 OID 16443)
+-- TOC entry 5180 (class 0 OID 16443)
 -- Dependencies: 227
 -- Data for Name: Usuario; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -808,26 +963,51 @@ COPY public."Usuario" ("IdUsuario", "Nombre", "Email", "PasswordHash", "Rol", "B
 
 
 --
--- TOC entry 5165 (class 0 OID 16539)
+-- TOC entry 5185 (class 0 OID 16539)
 -- Dependencies: 232
 -- Data for Name: Ventas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Ventas" ("IdVenta", "Fecha", "Total", "IdUsuario", "Estado") FROM stdin;
-2	2025-11-24 13:56:05.134674	300.00	4	COMPLETADA
-3	2025-11-24 16:23:15.093227	1050.00	\N	COMPLETADA
-4	2025-11-25 09:48:32.848748	600.00	\N	COMPLETADA
-5	2025-11-25 13:38:41.532084	650.00	\N	COMPLETADA
-6	2025-11-25 13:50:22.319847	950.00	\N	COMPLETADA
-7	2025-11-25 14:42:12.529143	650.00	\N	COMPLETADA
-8	2025-12-01 16:11:58.573514	300.00	4	COMPLETADA
-9	2025-12-01 16:39:09.423773	150.00	4	COMPLETADA
-10	2025-12-01 18:02:18.555247	2070.00	4	COMPLETADA
+COPY public."Ventas" ("IdVenta", "Fecha", "Total", "IdUsuario", "Estado", "ClienteNombre", "IdPuntoEntrega") FROM stdin;
+2	2025-11-24 13:56:05.134674	300.00	4	COMPLETADA	\N	\N
+3	2025-11-24 16:23:15.093227	1050.00	\N	COMPLETADA	\N	\N
+4	2025-11-25 09:48:32.848748	600.00	\N	COMPLETADA	\N	\N
+5	2025-11-25 13:38:41.532084	650.00	\N	COMPLETADA	\N	\N
+6	2025-11-25 13:50:22.319847	950.00	\N	COMPLETADA	\N	\N
+7	2025-11-25 14:42:12.529143	650.00	\N	COMPLETADA	\N	\N
+8	2025-12-01 16:11:58.573514	300.00	4	COMPLETADA	\N	\N
+9	2025-12-01 16:39:09.423773	150.00	4	COMPLETADA	\N	\N
+10	2025-12-01 18:02:18.555247	2070.00	4	COMPLETADA	\N	\N
+11	2025-12-02 12:01:38.065781	50.00	4	COMPLETADA	\N	\N
+12	2025-12-02 12:06:57.136428	100.00	4	COMPLETADA	\N	\N
+13	2025-12-02 12:07:56.135408	25.00	4	COMPLETADA	\N	\N
+14	2025-12-02 12:10:49.268129	75.00	4	COMPLETADA	\N	\N
+15	2025-12-02 12:17:50.13206	2275.00	4	COMPLETADA	\N	\N
+16	2025-12-02 15:52:28.542912	25.00	4	COMPLETADA	\N	\N
+17	2025-12-02 15:53:15.128949	25.00	4	COMPLETADA	\N	\N
+18	2025-12-02 16:14:17.206158	25.00	4	COMPLETADA	\N	\N
+19	2025-12-02 16:14:42.210706	2095.00	4	COMPLETADA	\N	\N
+20	2025-12-02 16:15:31.064339	25.00	4	COMPLETADA	\N	\N
+21	2025-12-02 16:16:05.896487	25.00	4	COMPLETADA	\N	\N
+22	2025-12-03 10:40:24.137206	25.00	4	COMPLETADA	\N	\N
+23	2025-12-03 10:43:49.804458	25.00	4	COMPLETADA	\N	\N
+24	2025-12-03 10:45:55.954556	25.00	4	COMPLETADA	\N	\N
+25	2025-12-03 10:47:07.890948	25.00	4	COMPLETADA	\N	\N
+26	2025-12-03 10:56:21.589628	25.00	4	COMPLETADA	\N	\N
+27	2025-12-03 10:57:53.56742	25.00	4	COMPLETADA	\N	\N
+28	2025-12-03 10:59:57.038239	25.00	4	COMPLETADA	\N	\N
+29	2025-12-03 11:00:24.700786	25.00	4	COMPLETADA	\N	\N
+30	2025-12-03 11:01:15.385731	25.00	4	COMPLETADA	\N	\N
+31	2025-12-03 11:01:41.402043	25.00	4	COMPLETADA	\N	\N
+32	2025-12-03 11:04:02.196531	25.00	4	COMPLETADA	\N	\N
+33	2025-12-08 11:38:21.712546	25.00	4	COMPLETADA	Público General	\N
+34	2025-12-08 13:08:46.171944	2095.00	4	COMPLETADA	Público General	\N
+35	2025-12-08 17:37:09.502311	45.00	4	COMPLETADA	Público General	\N
 \.
 
 
 --
--- TOC entry 5163 (class 0 OID 16522)
+-- TOC entry 5183 (class 0 OID 16522)
 -- Dependencies: 230
 -- Data for Name: bitacora_actividades; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -837,7 +1017,7 @@ COPY public.bitacora_actividades (id, usuario_id, accion, detalles, fecha) FROM 
 
 
 --
--- TOC entry 5193 (class 0 OID 0)
+-- TOC entry 5219 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: Articulos_IdArticulo_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -846,7 +1026,7 @@ SELECT pg_catalog.setval('public."Articulos_IdArticulo_seq"', 6, true);
 
 
 --
--- TOC entry 5194 (class 0 OID 0)
+-- TOC entry 5220 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: CfgStock_IdCfgStock_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -855,7 +1035,7 @@ SELECT pg_catalog.setval('public."CfgStock_IdCfgStock_seq"', 6, true);
 
 
 --
--- TOC entry 5195 (class 0 OID 0)
+-- TOC entry 5221 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: Combos_IdCombo_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -864,7 +1044,16 @@ SELECT pg_catalog.setval('public."Combos_IdCombo_seq"', 2, true);
 
 
 --
--- TOC entry 5196 (class 0 OID 0)
+-- TOC entry 5222 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: Configuracion_IdConfig_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Configuracion_IdConfig_seq"', 1, true);
+
+
+--
+-- TOC entry 5223 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: DetalleCombos_IdDetalleCombo_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -873,7 +1062,7 @@ SELECT pg_catalog.setval('public."DetalleCombos_IdDetalleCombo_seq"', 8, true);
 
 
 --
--- TOC entry 5197 (class 0 OID 0)
+-- TOC entry 5224 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: DetalleEntradas_IdDetalleEntrada_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -882,16 +1071,16 @@ SELECT pg_catalog.setval('public."DetalleEntradas_IdDetalleEntrada_seq"', 2, tru
 
 
 --
--- TOC entry 5198 (class 0 OID 0)
+-- TOC entry 5225 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: DetalleVentas_IdDetalle_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."DetalleVentas_IdDetalle_seq"', 18, true);
+SELECT pg_catalog.setval('public."DetalleVentas_IdDetalle_seq"', 50, true);
 
 
 --
--- TOC entry 5199 (class 0 OID 0)
+-- TOC entry 5226 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: Entradas_IdEntrada_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -900,7 +1089,7 @@ SELECT pg_catalog.setval('public."Entradas_IdEntrada_seq"', 1, true);
 
 
 --
--- TOC entry 5200 (class 0 OID 0)
+-- TOC entry 5227 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: Proveedores_IdProveedor_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -909,7 +1098,16 @@ SELECT pg_catalog.setval('public."Proveedores_IdProveedor_seq"', 3, true);
 
 
 --
--- TOC entry 5201 (class 0 OID 0)
+-- TOC entry 5228 (class 0 OID 0)
+-- Dependencies: 245
+-- Name: PuntosEntrega_IdPunto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."PuntosEntrega_IdPunto_seq"', 1, true);
+
+
+--
+-- TOC entry 5229 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: Salidas_IdSalida_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -918,7 +1116,7 @@ SELECT pg_catalog.setval('public."Salidas_IdSalida_seq"', 6, true);
 
 
 --
--- TOC entry 5202 (class 0 OID 0)
+-- TOC entry 5230 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: Usuario_IdUsuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -927,16 +1125,16 @@ SELECT pg_catalog.setval('public."Usuario_IdUsuario_seq"', 6, true);
 
 
 --
--- TOC entry 5203 (class 0 OID 0)
+-- TOC entry 5231 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: Ventas_IdVenta_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Ventas_IdVenta_seq"', 10, true);
+SELECT pg_catalog.setval('public."Ventas_IdVenta_seq"', 35, true);
 
 
 --
--- TOC entry 5204 (class 0 OID 0)
+-- TOC entry 5232 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: bitacora_actividades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -945,7 +1143,7 @@ SELECT pg_catalog.setval('public.bitacora_actividades_id_seq', 1, false);
 
 
 --
--- TOC entry 4952 (class 2606 OID 16463)
+-- TOC entry 4967 (class 2606 OID 16463)
 -- Name: Articulos Articulos_CodArticulo_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -954,7 +1152,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4954 (class 2606 OID 16465)
+-- TOC entry 4969 (class 2606 OID 16465)
 -- Name: Articulos Articulos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -963,7 +1161,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4956 (class 2606 OID 16467)
+-- TOC entry 4971 (class 2606 OID 16467)
 -- Name: CfgStock CfgStock_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -972,7 +1170,7 @@ ALTER TABLE ONLY public."CfgStock"
 
 
 --
--- TOC entry 4974 (class 2606 OID 16585)
+-- TOC entry 4989 (class 2606 OID 16585)
 -- Name: Combos Combos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -981,7 +1179,16 @@ ALTER TABLE ONLY public."Combos"
 
 
 --
--- TOC entry 4976 (class 2606 OID 16595)
+-- TOC entry 4997 (class 2606 OID 16741)
+-- Name: Configuracion Configuracion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Configuracion"
+    ADD CONSTRAINT "Configuracion_pkey" PRIMARY KEY ("IdConfig");
+
+
+--
+-- TOC entry 4991 (class 2606 OID 16595)
 -- Name: DetalleCombos DetalleCombos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -990,7 +1197,7 @@ ALTER TABLE ONLY public."DetalleCombos"
 
 
 --
--- TOC entry 4980 (class 2606 OID 16716)
+-- TOC entry 4995 (class 2606 OID 16716)
 -- Name: DetalleEntradas DetalleEntradas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -999,7 +1206,7 @@ ALTER TABLE ONLY public."DetalleEntradas"
 
 
 --
--- TOC entry 4972 (class 2606 OID 16564)
+-- TOC entry 4987 (class 2606 OID 16564)
 -- Name: DetalleVentas DetalleVentas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1008,7 +1215,7 @@ ALTER TABLE ONLY public."DetalleVentas"
 
 
 --
--- TOC entry 4978 (class 2606 OID 16695)
+-- TOC entry 4993 (class 2606 OID 16695)
 -- Name: Entradas Entradas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1017,7 +1224,7 @@ ALTER TABLE ONLY public."Entradas"
 
 
 --
--- TOC entry 4958 (class 2606 OID 16471)
+-- TOC entry 4973 (class 2606 OID 16471)
 -- Name: Proveedores Proveedores_RFC_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1026,7 +1233,7 @@ ALTER TABLE ONLY public."Proveedores"
 
 
 --
--- TOC entry 4960 (class 2606 OID 16473)
+-- TOC entry 4975 (class 2606 OID 16473)
 -- Name: Proveedores Proveedores_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1035,7 +1242,16 @@ ALTER TABLE ONLY public."Proveedores"
 
 
 --
--- TOC entry 4962 (class 2606 OID 16475)
+-- TOC entry 4999 (class 2606 OID 16754)
+-- Name: PuntosEntrega PuntosEntrega_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."PuntosEntrega"
+    ADD CONSTRAINT "PuntosEntrega_pkey" PRIMARY KEY ("IdPunto");
+
+
+--
+-- TOC entry 4977 (class 2606 OID 16475)
 -- Name: Salidas Salidas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1044,7 +1260,7 @@ ALTER TABLE ONLY public."Salidas"
 
 
 --
--- TOC entry 4964 (class 2606 OID 16477)
+-- TOC entry 4979 (class 2606 OID 16477)
 -- Name: Usuario Usuario_Email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1053,7 +1269,7 @@ ALTER TABLE ONLY public."Usuario"
 
 
 --
--- TOC entry 4966 (class 2606 OID 16479)
+-- TOC entry 4981 (class 2606 OID 16479)
 -- Name: Usuario Usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1062,7 +1278,7 @@ ALTER TABLE ONLY public."Usuario"
 
 
 --
--- TOC entry 4970 (class 2606 OID 16548)
+-- TOC entry 4985 (class 2606 OID 16548)
 -- Name: Ventas Ventas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1071,7 +1287,7 @@ ALTER TABLE ONLY public."Ventas"
 
 
 --
--- TOC entry 4968 (class 2606 OID 16532)
+-- TOC entry 4983 (class 2606 OID 16532)
 -- Name: bitacora_actividades bitacora_actividades_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1080,7 +1296,7 @@ ALTER TABLE ONLY public.bitacora_actividades
 
 
 --
--- TOC entry 4981 (class 2606 OID 16480)
+-- TOC entry 5000 (class 2606 OID 16480)
 -- Name: Articulos Articulos_ClaUserMod_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1089,7 +1305,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4982 (class 2606 OID 16485)
+-- TOC entry 5001 (class 2606 OID 16485)
 -- Name: Articulos Articulos_IdCfgStock_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1098,7 +1314,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4983 (class 2606 OID 16490)
+-- TOC entry 5002 (class 2606 OID 16490)
 -- Name: Articulos Articulos_IdProveedor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1107,7 +1323,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4984 (class 2606 OID 16623)
+-- TOC entry 5003 (class 2606 OID 16623)
 -- Name: Articulos Articulos_IdUsuarioCreacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1116,7 +1332,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4985 (class 2606 OID 16628)
+-- TOC entry 5004 (class 2606 OID 16628)
 -- Name: Articulos Articulos_IdUsuarioModificacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1125,7 +1341,7 @@ ALTER TABLE ONLY public."Articulos"
 
 
 --
--- TOC entry 4997 (class 2606 OID 16634)
+-- TOC entry 5017 (class 2606 OID 16634)
 -- Name: Combos Combos_IdUsuarioCreacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1134,7 +1350,7 @@ ALTER TABLE ONLY public."Combos"
 
 
 --
--- TOC entry 4998 (class 2606 OID 16639)
+-- TOC entry 5018 (class 2606 OID 16639)
 -- Name: Combos Combos_IdUsuarioModificacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1143,7 +1359,7 @@ ALTER TABLE ONLY public."Combos"
 
 
 --
--- TOC entry 4999 (class 2606 OID 16601)
+-- TOC entry 5019 (class 2606 OID 16601)
 -- Name: DetalleCombos DetalleCombos_IdArticulo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1152,7 +1368,7 @@ ALTER TABLE ONLY public."DetalleCombos"
 
 
 --
--- TOC entry 5000 (class 2606 OID 16596)
+-- TOC entry 5020 (class 2606 OID 16596)
 -- Name: DetalleCombos DetalleCombos_IdCombo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1161,7 +1377,7 @@ ALTER TABLE ONLY public."DetalleCombos"
 
 
 --
--- TOC entry 5003 (class 2606 OID 16722)
+-- TOC entry 5023 (class 2606 OID 16722)
 -- Name: DetalleEntradas DetalleEntradas_IdArticulo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1170,7 +1386,7 @@ ALTER TABLE ONLY public."DetalleEntradas"
 
 
 --
--- TOC entry 5004 (class 2606 OID 16717)
+-- TOC entry 5024 (class 2606 OID 16717)
 -- Name: DetalleEntradas DetalleEntradas_IdEntrada_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1179,7 +1395,7 @@ ALTER TABLE ONLY public."DetalleEntradas"
 
 
 --
--- TOC entry 4994 (class 2606 OID 16570)
+-- TOC entry 5014 (class 2606 OID 16570)
 -- Name: DetalleVentas DetalleVentas_IdArticulo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1188,7 +1404,7 @@ ALTER TABLE ONLY public."DetalleVentas"
 
 
 --
--- TOC entry 4995 (class 2606 OID 16606)
+-- TOC entry 5015 (class 2606 OID 16606)
 -- Name: DetalleVentas DetalleVentas_IdCombo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1197,7 +1413,7 @@ ALTER TABLE ONLY public."DetalleVentas"
 
 
 --
--- TOC entry 4996 (class 2606 OID 16565)
+-- TOC entry 5016 (class 2606 OID 16565)
 -- Name: DetalleVentas DetalleVentas_IdVenta_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1206,7 +1422,7 @@ ALTER TABLE ONLY public."DetalleVentas"
 
 
 --
--- TOC entry 5001 (class 2606 OID 16696)
+-- TOC entry 5021 (class 2606 OID 16696)
 -- Name: Entradas Entradas_IdProveedor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1215,7 +1431,7 @@ ALTER TABLE ONLY public."Entradas"
 
 
 --
--- TOC entry 5002 (class 2606 OID 16701)
+-- TOC entry 5022 (class 2606 OID 16701)
 -- Name: Entradas Entradas_IdUsuarioCreacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1224,7 +1440,7 @@ ALTER TABLE ONLY public."Entradas"
 
 
 --
--- TOC entry 4986 (class 2606 OID 16612)
+-- TOC entry 5005 (class 2606 OID 16612)
 -- Name: Proveedores Proveedores_IdUsuarioCreacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1233,7 +1449,7 @@ ALTER TABLE ONLY public."Proveedores"
 
 
 --
--- TOC entry 4987 (class 2606 OID 16617)
+-- TOC entry 5006 (class 2606 OID 16617)
 -- Name: Proveedores Proveedores_IdUsuarioModificacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1242,7 +1458,7 @@ ALTER TABLE ONLY public."Proveedores"
 
 
 --
--- TOC entry 4988 (class 2606 OID 16505)
+-- TOC entry 5007 (class 2606 OID 16505)
 -- Name: Salidas Salidas_ClaUserMod_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1251,7 +1467,7 @@ ALTER TABLE ONLY public."Salidas"
 
 
 --
--- TOC entry 4989 (class 2606 OID 16510)
+-- TOC entry 5008 (class 2606 OID 16510)
 -- Name: Salidas Salidas_IdArticulo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1260,7 +1476,7 @@ ALTER TABLE ONLY public."Salidas"
 
 
 --
--- TOC entry 4990 (class 2606 OID 16645)
+-- TOC entry 5009 (class 2606 OID 16645)
 -- Name: Usuario Usuario_IdUsuarioCreacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1269,7 +1485,7 @@ ALTER TABLE ONLY public."Usuario"
 
 
 --
--- TOC entry 4991 (class 2606 OID 16650)
+-- TOC entry 5010 (class 2606 OID 16650)
 -- Name: Usuario Usuario_IdUsuarioModificacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1278,7 +1494,16 @@ ALTER TABLE ONLY public."Usuario"
 
 
 --
--- TOC entry 4993 (class 2606 OID 16549)
+-- TOC entry 5012 (class 2606 OID 16755)
+-- Name: Ventas Ventas_IdPuntoEntrega_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Ventas"
+    ADD CONSTRAINT "Ventas_IdPuntoEntrega_fkey" FOREIGN KEY ("IdPuntoEntrega") REFERENCES public."PuntosEntrega"("IdPunto");
+
+
+--
+-- TOC entry 5013 (class 2606 OID 16549)
 -- Name: Ventas Ventas_IdUsuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1287,7 +1512,7 @@ ALTER TABLE ONLY public."Ventas"
 
 
 --
--- TOC entry 4992 (class 2606 OID 16533)
+-- TOC entry 5011 (class 2606 OID 16533)
 -- Name: bitacora_actividades bitacora_actividades_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1295,11 +1520,11 @@ ALTER TABLE ONLY public.bitacora_actividades
     ADD CONSTRAINT bitacora_actividades_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public."Usuario"("IdUsuario") ON DELETE SET NULL;
 
 
--- Completed on 2025-12-01 18:09:59
+-- Completed on 2025-12-08 17:49:18
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qPNicwbgkPb222uKnvClqvcnk4GfN1w90Kbym3FAqgRfVeWTFnLu4yTT0vebUfb
+\unrestrict fPN3HVPHgxPP9TbW62pb87FH4BSCroKOD3s9DsdZOsJG7vFjgP1S1jnaZOqOLaW
 
