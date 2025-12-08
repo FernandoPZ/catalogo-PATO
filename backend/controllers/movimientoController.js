@@ -2,16 +2,28 @@ exports.getHistorialMovimientos = async (req, res) => {
     const client = await pool.connect();
     try {
         const result = await client.query(`
-            SELECT E."IdEntrada" AS "IdMovimiento", E."IdArticulo", A."NomArticulo", 'ENTRADA' AS "TipoMovimiento", E."Cantidad", A."StockActual" AS "StockFinal", E."FechaMovimiento"
-            FROM "Entradas" E
-            JOIN "Articulos" A ON E."IdArticulo" = A."IdArticulo"
-            WHERE E."BajaLogica" = TRUE
-            UNION ALL
-            SELECT S."IdSalida" AS "IdMovimiento", S."IdArticulo", A."NomArticulo", 'SALIDA' AS "TipoMovimiento", S."Cantidad", A."StockActual" AS "StockFinal", S."FechaMovimiento"
-            FROM "Salidas" S
-            JOIN "Articulos" A ON S."IdArticulo" = A."IdArticulo"
-            WHERE S."BajaLogica" = TRUE
-            ORDER BY "FechaMovimiento" DESC
+            SELECT E."IdEntrada" AS "IdMovimiento",
+                   E."IdArticulo",
+                   A."NomArticulo",
+                   'ENTRADA' AS "TipoMovimiento",
+                   E."Cantidad",
+                   A."StockActual" AS "StockFinal",
+                   E."FechaMovimiento"
+                FROM "Entradas" E
+                JOIN "Articulos" A ON E."IdArticulo" = A."IdArticulo"
+                WHERE E."BajaLogica" = TRUE
+                UNION ALL
+            SELECT S."IdSalida" AS "IdMovimiento",
+                   S."IdArticulo",
+                   A."NomArticulo",
+                   'SALIDA' AS "TipoMovimiento",
+                   S."Cantidad",
+                   A."StockActual" AS "StockFinal",
+                   S."FechaMovimiento"
+                FROM "Salidas" S
+                JOIN "Articulos" A ON S."IdArticulo" = A."IdArticulo"
+                WHERE S."BajaLogica" = TRUE
+                ORDER BY "FechaMovimiento" DESC
         `);
         res.json(result.rows);
     } catch (error) {
@@ -43,10 +55,11 @@ exports.entradaInsumo = async (req, res) => {
     try {
         await client.query('BEGIN');
         const stockQuery = await client.query(
-            `SELECT A."StockActual", CS."CantidadMaxima" 
-             FROM "Articulos" AS A
-             JOIN "CfgStock" AS CS ON A."IdCfgStock" = CS."IdCfgStock"
-             WHERE A."IdArticulo" = $1 AND A."BajaLogica" = TRUE`,
+            `SELECT A."StockActual",
+                    CS."CantidadMaxima" 
+                FROM "Articulos" AS A
+                JOIN "CfgStock" AS CS ON A."IdCfgStock" = CS."IdCfgStock"
+                WHERE A."IdArticulo" = $1 AND A."BajaLogica" = TRUE`,
             [IdArticulo]
         );
         if (stockQuery.rows.length === 0) {
@@ -70,7 +83,7 @@ exports.entradaInsumo = async (req, res) => {
         );
         await client.query(
             `INSERT INTO "Entradas" ("IdArticulo", "Cantidad", "Comentarios", "FechaMovimiento", "FechaUltMod", "ClaUserMod", "NombrePcMod", "BajaLogica") 
-            VALUES ($1, $2, $3, NOW(), NOW(), $4, $5, TRUE)`,
+                VALUES ($1, $2, $3, NOW(), NOW(), $4, $5, TRUE)`,
             [IdArticulo, cantidadNumerica, Comentarios, ClaUserMod, NombrePcMod]
         );
        await client.query('COMMIT');
@@ -102,10 +115,11 @@ exports.salidaInsumo = async (req, res) => {
     try {
         await client.query('BEGIN');
         const stockQuery = await client.query(
-            `SELECT A."StockActual", CS."CantidadMinima" 
-             FROM "Articulos" AS A
-             JOIN "CfgStock" AS CS ON A."IdCfgStock" = CS."IdCfgStock"
-             WHERE A."IdArticulo" = $1 AND A."BajaLogica" = TRUE`,
+            `SELECT A."StockActual",
+                    CS."CantidadMinima" 
+                FROM "Articulos" AS A
+                JOIN "CfgStock" AS CS ON A."IdCfgStock" = CS."IdCfgStock"
+                WHERE A."IdArticulo" = $1 AND A."BajaLogica" = TRUE`,
             [IdArticulo]
         );
         if (stockQuery.rows.length === 0) {
@@ -126,13 +140,17 @@ exports.salidaInsumo = async (req, res) => {
             stockAlert = `ATENCIÓN: La salida deja el stock en ${nuevoStock}, alcanzando el límite mínimo de ${CantidadMinima}.`;
         }
         await client.query(
-            `UPDATE "Articulos" SET "StockActual" = $1, "FechaUltMod" = NOW(), "ClaUserMod" = $2, "NombrePcMod" = $3 
-             WHERE "IdArticulo" = $4`,
+            `UPDATE "Articulos"
+                SET "StockActual" = $1,
+                    "FechaUltMod" = NOW(),
+                    "ClaUserMod" = $2,
+                    "NombrePcMod" = $3 
+                WHERE "IdArticulo" = $4`,
             [nuevoStock, ClaUserMod, NombrePcMod, IdArticulo]
         );
         await client.query(
             `INSERT INTO "Salidas" ("IdArticulo", "Cantidad", "Comentarios", "FechaMovimiento", "FechaUltMod", "ClaUserMod", "NombrePcMod", "BajaLogica") 
-            VALUES ($1, $2, $3, NOW(), NOW(), $4, $5, TRUE)`,
+                VALUES ($1, $2, $3, NOW(), NOW(), $4, $5, TRUE)`,
             [IdArticulo, cantidadNumerica, Comentarios, ClaUserMod, NombrePcMod]
         );
         await client.query('COMMIT');

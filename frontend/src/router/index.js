@@ -16,6 +16,8 @@ import CombosView from '@/views/CombosView.vue';
 import ComboForm from '@/views/ComboForm.vue';
 import HistorialVentas from '@/views/HistorialVentas.vue';
 import HistorialCompras from '@/views/HistorialCompras.vue';
+import ConfigTiendaView from '@/views/ConfigTiendaView.vue';
+import PuntosEntregaView from '@/views/PuntosEntregaView.vue';
 
 const routes = [
   { path: '/', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
@@ -37,6 +39,8 @@ const routes = [
   { path: '/kits/editar/:id', name: 'KitEditar', component: ComboForm, meta: { requiresAuth: true } },
   { path: '/historial/ventas', name: 'HistorialVentas', component: HistorialVentas, meta: { requiresAuth: true } },
   { path: '/historial/compras', name: 'HistorialCompras', component: HistorialCompras, meta: { requiresAuth: true } },
+  { path: '/configuracion', name: 'Configuracion', component: ConfigTiendaView, meta: { requiresAuth: true } },
+  { path: '/puntos-entrega', component: PuntosEntregaView, meta: { requiresAuth: true } },
   { path: '/:catchAll(.*)', redirect: '/' },
 ];
 

@@ -5,26 +5,30 @@ exports.getResumen = async (req, res) => {
     try {
         const ventasQuery = `
             SELECT COALESCE(SUM("Total"), 0) as total 
-            FROM "Ventas" 
-            WHERE DATE("Fecha") = CURRENT_DATE
+                FROM "Ventas" 
+                WHERE DATE("Fecha") = CURRENT_DATE
         `;
         const comprasQuery = `
             SELECT COALESCE(SUM("Total"), 0) as total 
-            FROM "Entradas" 
-            WHERE DATE("Fecha") = CURRENT_DATE
+                FROM "Entradas" 
+                WHERE DATE("Fecha") = CURRENT_DATE
         `;
         const stockBajoQuery = `
-            SELECT "NomArticulo", "StockActual" 
-            FROM "Articulos" 
-            WHERE "StockActual" <= 5 AND "BajaLogica" IS NOT TRUE
-            LIMIT 5
+            SELECT "NomArticulo",
+                   "StockActual" 
+                FROM "Articulos" 
+                WHERE "StockActual" <= 5 AND "BajaLogica" IS NOT TRUE
+                LIMIT 5
         `;
         const recientesQuery = `
-            SELECT v."IdVenta", v."Total", v."Fecha", u."Nombre" as "Vendedor"
-            FROM "Ventas" v
-            LEFT JOIN "Usuario" u ON v."IdUsuario" = u."IdUsuario"
-            ORDER BY v."Fecha" DESC
-            LIMIT 5
+            SELECT v."IdVenta",
+                   v."Total",
+                   v."Fecha",
+                   u."Nombre" as "Vendedor"
+                FROM "Ventas" v
+                LEFT JOIN "Usuario" u ON v."IdUsuario" = u."IdUsuario"
+                ORDER BY v."Fecha" DESC
+                LIMIT 5
         `;
         const [ventasRes, comprasRes, stockRes, recientesRes] = await Promise.all([
             client.query(ventasQuery),

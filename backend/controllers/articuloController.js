@@ -8,7 +8,7 @@ exports.getArticulos = async (req, res) => {
                     A."CodArticulo",
                     A."NomArticulo",
                     A."StockActual", 
-                    A."PrecioVenta",  -- <--- NUEVO CAMPO
+                    A."PrecioVenta",
                     A."FechaAlta", 
                     CS."CantidadMaxima",
                     CS."CantidadMinima", 
@@ -16,7 +16,7 @@ exports.getArticulos = async (req, res) => {
                 FROM "Articulos" AS A
                 JOIN "CfgStock" AS CS ON A."IdCfgStock" = CS."IdCfgStock"
                 LEFT JOIN "Proveedores" AS P ON A."IdProveedor" = P."IdProveedor"
-                WHERE A."BajaLogica" IS NOT TRUE -- CORRECCIÓN: Traer NO eliminados
+                WHERE A."BajaLogica" IS NOT TRUE
                 ORDER BY A."NomArticulo" ASC`
         );
         res.json(result.rows);
@@ -37,7 +37,7 @@ exports.getArticuloById = async (req, res) => {
                     A."CodArticulo",
                     A."NomArticulo",
                     A."StockActual", 
-                    A."PrecioVenta", -- <--- NUEVO CAMPO
+                    A."PrecioVenta",
                     A."IdProveedor",
                     A."IdCfgStock",
                     CS."CantidadMaxima",
@@ -72,20 +72,17 @@ exports.createArticulo = async (req, res) => {
         await client.query('BEGIN');
         const cfgQuery = `
             INSERT INTO "CfgStock" ("CantidadMaxima", "CantidadMinima", "FechaAlta", "BajaLogica") 
-            VALUES ($1, $2, NOW(), FALSE) 
-            RETURNING "IdCfgStock"
+                VALUES ($1, $2, NOW(), FALSE) 
+                RETURNING "IdCfgStock"
         `;
         const cfgRes = await client.query(cfgQuery, [CantidadMaxima || 0, CantidadMinima || 0]);
         const IdCfgStock = cfgRes.rows[0].IdCfgStock;
         const artQuery = `
-            INSERT INTO "Articulos" (
-                "CodArticulo", "NomArticulo", "IdProveedor", "IdCfgStock", 
-                "StockActual", "PrecioVenta", 
-                "FechaAlta", "BajaLogica", 
-                "IdUsuarioCreacion", "FechaCreacion"
-            ) 
-            VALUES ($1, $2, $3, $4, $5, $6, NOW(), FALSE, $7, NOW()) 
-            RETURNING *
+            INSERT INTO "Articulos" ("CodArticulo", "NomArticulo", "IdProveedor", "IdCfgStock", 
+                                     "StockActual", "PrecioVenta", "FechaAlta", "BajaLogica", 
+                                     "IdUsuarioCreacion", "FechaCreacion") 
+                VALUES ($1, $2, $3, $4, $5, $6, NOW(), FALSE, $7, NOW()) 
+                RETURNING *
         `;
         const result = await client.query(artQuery, [
             CodArticulo || '', 
@@ -126,12 +123,12 @@ exports.updateArticulo = async (req, res) => {
         );
         const updateQuery = `
             UPDATE "Articulos" SET 
-                "NomArticulo" = $1, 
-                "IdProveedor" = $2, 
-                "PrecioVenta" = $3,
-                "IdUsuarioModificacion" = $4, 
-                "FechaModificacion" = NOW() 
-            WHERE "IdArticulo" = $5 RETURNING *
+                   "NomArticulo" = $1, 
+                   "IdProveedor" = $2, 
+                   "PrecioVenta" = $3,
+                   "IdUsuarioModificacion" = $4, 
+                   "FechaModificacion" = NOW() 
+                WHERE "IdArticulo" = $5 RETURNING *
         `;
         const result = await client.query(updateQuery, [NomArticulo, IdProveedor, PrecioVenta, IdUsuario, id]);
         await client.query('COMMIT');

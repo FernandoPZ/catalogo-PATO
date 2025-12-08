@@ -40,8 +40,8 @@
                                     <span class="badge bg-danger" v-else>Inactivo</span>
                                 </td>
                                 <td>
-                                    <router-link 
-                                        :to="{ name: 'UsuarioEditar', params: { id: user.IdUsuario } }" 
+                                    <router-link
+                                        :to="{ name: 'UsuarioEditar', params: { id: user.IdUsuario } }"
                                         class="btn btn-sm btn-info me-2 minimal-btn"
                                     >
                                         Editar

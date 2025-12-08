@@ -42,9 +42,9 @@ exports.createProveedor = async (req, res) => {
   try {
     const query = `
       INSERT INTO "Proveedores" 
-      ("NomProveedor", "RFC", "BajaLogica", "IdUsuarioCreacion", "FechaCreacion") 
-      VALUES ($1, $2, FALSE, $3, NOW()) 
-      RETURNING *
+        ("NomProveedor", "RFC", "BajaLogica", "IdUsuarioCreacion", "FechaCreacion") 
+        VALUES ($1, $2, FALSE, $3, NOW()) 
+        RETURNING *
     `;
     const result = await client.query(query, [
         NomProveedor, 
@@ -67,13 +67,12 @@ exports.updateProveedor = async (req, res) => {
   try {
     const query = `
       UPDATE "Proveedores" 
-      SET 
-        "NomProveedor" = $1, 
-        "RFC" = $2,
-        "IdUsuarioModificacion" = $3,
-        "FechaModificacion" = NOW()
-      WHERE "IdProveedor" = $4
-      RETURNING *
+        SET "NomProveedor" = $1, 
+            "RFC" = $2,
+            "IdUsuarioModificacion" = $3,
+            "FechaModificacion" = NOW()
+        WHERE "IdProveedor" = $4
+        RETURNING *
     `;
     const result = await client.query(query, [NomProveedor, RFC, idUsuarioLogueado, id]);
     if (result.rowCount === 0) {

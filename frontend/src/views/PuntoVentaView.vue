@@ -125,6 +125,41 @@
                             </ul>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Cliente (Opcional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-user"></i></span>
+                                <input 
+                                    v-model="clienteNombre" 
+                                    type="text" 
+                                    class="form-control minimal-input border-start-0" 
+                                    placeholder="Público General"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Punto de Entrega (QR)</label>
+                            <select v-model="puntoSeleccionado" class="form-select minimal-input">
+                                <option :value="null">-- Sin Punto de Entrega --</option>
+                                <option v-for="p in puntosEntrega" :key="p.IdPunto" :value="p">
+                                    {{ p.NombrePunto }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Fecha de Entrega</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-regular fa-calendar"></i></span>
+                                <input 
+                                    v-model="fechaEntrega" 
+                                    type="date" 
+                                    class="form-control minimal-input border-start-0"
+                                >
+                            </div>
+                        </div>
+
                         <div class="mt-auto border-top pt-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Subtotal:</span>
@@ -161,6 +196,8 @@ import { generarTicketPDF } from '@/utils/ticketGenerator';
 import logoImg from '@/assets/Logo01.png';
 import marcImg from '@/assets/Logo02.png';
 import instaImg from '@/assets/Instagram.png';
+import configService from '@/services/configService';
+import puntosService from '@/services/puntosEntregaService';
 
 const authStore = useAuthStore();
 const articulos = ref([]);
@@ -169,6 +206,11 @@ const carrito = ref([]);
 const busqueda = ref("");
 const loadingVenta = ref(false);
 const tabActiva = ref('ARTICULOS');
+const configTienda = ref({});
+const clienteNombre = ref("");
+const puntosEntrega = ref([]);
+const puntoSeleccionado = ref(null);
+const fechaEntrega = ref(new Date().toISOString().substr(0, 10));
 onMounted(async () => {
     cargarDatos();
 });
@@ -181,6 +223,8 @@ const cargarDatos = async () => {
         ]);
         articulos.value = resArticulos;
         combos.value = resCombos;
+        configTienda.value = await configService.getConfig();
+        puntosEntrega.value = await puntosService.getPuntos();
     } catch (error) {
         console.error("Error cargando datos", error);
     }
@@ -243,12 +287,16 @@ const eliminarDelCarrito = (index) => {
 
 const procesarVenta = async () => {
     if (!confirm(`¿Confirmar venta por $${totalVenta.value.toFixed(2)}?`)) return;
+    if (!puntoSeleccionado.value) {
+         if(!confirm("¿Deseas continuar sin punto de entrega? (No saldrá QR)")) return;
+    }
 
     loadingVenta.value = true;
     try {
         const payload = {
             idUsuario: authStore.user.IdUsuario,
             total: totalVenta.value,
+            clienteNombre: clienteNombre.value,
             productos: carrito.value.map(item => ({
                 id: item.id,
                 tipo: item.tipo,
@@ -266,7 +314,11 @@ const procesarVenta = async () => {
             totalVenta.value,
             logoImg,
             marcImg,
-            instaImg
+            instaImg,
+            configTienda.value,
+            clienteNombre.value,
+            puntoSeleccionado.value ? puntoSeleccionado.value.LinkGoogleMaps : null,
+            fechaEntrega.value
         );
         
         alert("¡Venta exitosa!");

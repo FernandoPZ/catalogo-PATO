@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import QRCode from 'qrcode';
 
 const cargarImagen = (src) => {
     return new Promise((resolve) => {
@@ -7,14 +8,11 @@ const cargarImagen = (src) => {
         const img = new Image();
         img.src = src;
         img.onload = () => resolve(img);
-        img.onerror = () => {
-            console.warn("No se pudo cargar una imagen");
-            resolve(null);
-        };
+        img.onerror = () => { resolve(null); };
     });
 };
 
-export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, logoTopSrc, watermarkSrc, redSocialSrc) => {
+export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, logoTopSrc, watermarkSrc, redSocialSrc, configTienda, nombreCliente, linkMaps, fechaEntrega) => {
     
     const doc = new jsPDF({
         orientation: 'portrait',
@@ -37,11 +35,11 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
             const wAlto = (imgWatermark.height * wAncho) / imgWatermark.width; 
             const wX = (80 - wAncho) / 2;
             doc.setGState(new doc.GState({ opacity: 0.10 }));
-            doc.addImage(imgWatermark, 'PNG', wX, 40, wAncho, wAlto);
+            doc.addImage(imgWatermark, 'PNG', wX, 60, wAncho, wAlto);
             doc.setGState(new doc.GState({ opacity: 1.0 }));
         } catch (e) { console.error(e); }
     }
-    // --- LOGO CABECERA ---
+    // --- LOGO SUPERIOR ---
     if (imgTop) {
         try {
             const lAncho = 30; 
@@ -52,44 +50,72 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
         } catch (e) { console.error(e); }
     }
 
-    // --- DATOS SUCURSAL Y REDES ---
+    // --- CABECERA TIENDA ---
     if (!imgTop) {
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
-        doc.text("Aura Creativa", centerX, yPos, { align: "center" });
+        doc.text(configTienda?.NombreTienda || "Mi Tienda", centerX, yPos, { align: "center" });
         yPos += 5;
     }
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     
-    // LÓGICA DEL INSTAGRAM
-    if (imgRedSocial) {
-        const iconSize = 4;
-        const textoRed = "@aura.sublimados";
-        const textWidth = doc.getTextWidth(textoRed);
-        const totalWidth = iconSize + 1 + textWidth;
-        const startX = (80 - totalWidth) / 2;
-        // Dibujar Icono
-        doc.addImage(imgRedSocial, 'PNG', startX, yPos - 3, iconSize, iconSize);
-        // Dibujar Texto al lado
-        doc.text(textoRed, startX + iconSize + 1, yPos);
-    } else {
-        // Fallback si no carga la imagen
-        doc.text("Instagram: @catalogo_pato", centerX, yPos, { align: "center" });
+    // Dirección
+    if (configTienda?.Direccion) {
+        const direLines = doc.splitTextToSize(configTienda.Direccion, 70);
+        doc.text(direLines, centerX, yPos, { align: "center" });
+        yPos += (direLines.length * 4); 
     }
-    yPos += 5;
-    doc.text("Tel: 771-430-6643", centerX, yPos, { align: "center" });
-    yPos += 4;
+
+    // Red Social
+    if (configTienda?.RedSocial) {
+        const textoRed = configTienda.RedSocial;
+        if (imgRedSocial) {
+            const iconSize = 4;
+            const textWidth = doc.getTextWidth(textoRed);
+            const totalWidth = iconSize + 1 + textWidth;
+            const startX = (80 - totalWidth) / 2;
+            doc.addImage(imgRedSocial, 'PNG', startX, yPos - 3, iconSize, iconSize);
+            doc.text(textoRed, startX + iconSize + 1, yPos);
+        } else {
+            doc.text(textoRed, centerX, yPos, { align: "center" });
+        }
+        yPos += 5;
+    }
+
+    // Teléfono
+    if (configTienda?.Telefono) {
+        doc.text(`Tel: ${configTienda.Telefono}`, centerX, yPos, { align: "center" });
+        yPos += 4;
+    }
+
     doc.text("--------------------------------", centerX, yPos, { align: "center" });
     yPos += 5;
     // --- DATOS VENTA ---
     doc.text(`Folio: #${ventaId}`, 5, yPos);
     yPos += 4;
-    doc.text(`Fecha: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 5, yPos);
+    
+    // 1. FECHA DE EMISIÓN (Hoy)
+    const fechaEmision = new Date().toLocaleString(); // Fecha y hora actual
+    doc.text(`Emisión: ${fechaEmision}`, 5, yPos);
+    yPos += 4;
+
+    // 2. FECHA DE ENTREGA (La que seleccionaste)
+    if (fechaEntrega) {
+        // Formatear un poco la fecha (AAAA-MM-DD -> DD/MM/AAAA)
+        const [anio, mes, dia] = fechaEntrega.split('-');
+        doc.setFont("helvetica", "bold"); // Negrita para resaltar
+        doc.text(`Entrega: ${dia}/${mes}/${anio}`, 5, yPos);
+        doc.setFont("helvetica", "normal"); // Volver a normal
+        yPos += 4;
+    }
+
+    doc.text(`Cliente: ${nombreCliente || 'Público General'}`, 5, yPos);
     yPos += 4;
     doc.text(`Le atendió: ${usuarioNombre}`, 5, yPos);
     yPos += 2;
-    // --- TABLA ---
+
+    // --- TABLA DE PRODUCTOS ---
     const columnas = ["Cant", "Prod", "P.U.", "Total"];
     const filas = carrito.map(item => [
         item.cantidad,
@@ -117,12 +143,30 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.text(`TOTAL: $${total.toFixed(2)}`, 76, finalY, { align: "right" });
-    // --- PIE ---
+
+    let yPie = finalY + 15;
+
+    // --- CÓDIGO QR ---
+    if (linkMaps) {
+        try {
+            const qrDataUrl = await QRCode.toDataURL(linkMaps, { margin: 1 });
+            const qrSize = 25;
+            const qrX = (80 - qrSize) / 2;
+
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "bold");
+            doc.text("Escanea para ver ubicación de entrega:", centerX, yPie, { align: "center" });
+            
+            doc.addImage(qrDataUrl, 'PNG', qrX, yPie + 2, qrSize, qrSize);
+            yPie += qrSize + 5; 
+        } catch (err) { console.error(err); }
+    }
+
+    // --- MENSAJE FINAL ---
     doc.setFontSize(8);
     doc.setFont("helvetica", "italic");
-    doc.text("¡Gracias por su compra!", centerX, finalY + 10, { align: "center" });
-    doc.text("********", centerX, finalY + 14, { align: "center" });
-    doc.save(`Ticket_Venta_${ventaId}.pdf`);
-    const pdfBlob = doc.output('bloburl');
-    window.open(pdfBlob, '_blank');
+    doc.text(configTienda?.MensajeTicket || "¡Gracias!", centerX, yPie, { align: "center" });
+
+    doc.save(`Ticket_${ventaId}.pdf`);
+    window.open(doc.output('bloburl'), '_blank');
 };

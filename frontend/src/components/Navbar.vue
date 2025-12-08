@@ -18,8 +18,8 @@
               <i class="fa-solid fa-store"></i> Operaciones
             </a>
             <ul class="dropdown-menu border-0 shadow-sm">
-              <li><router-link to="/pos" class="dropdown-item"><i class="fa-solid fa-cash-register"></i> Punto de Venta</router-link></li>
-              <li><router-link to="/entradas/nueva" class="dropdown-item"><i class="fa-solid fa-box-open"></i> Resurtir (Compras)</router-link></li>
+              <li><router-link to="/pos" class="dropdown-item"><i class="fa-solid fa-cash-register me-1"></i> Punto de Venta</router-link></li>
+              <li><router-link to="/entradas/nueva" class="dropdown-item"><i class="fa-solid fa-box-open me-1"></i> Resurtir (Compras)</router-link></li>
             </ul>
           </li>
 
@@ -28,13 +28,9 @@
               <i class="fa-solid fa-book-open"></i> Catálogos
             </a>
             <ul class="dropdown-menu border-0 shadow-sm">
-              <li><router-link to="/articulos" class="dropdown-item"><i class="fa-solid fa-boxes-stacked"></i> Artículos</router-link></li>
-              <li><router-link to="/proveedores" class="dropdown-item"><i class="fa-solid fa-truck"></i> Proveedores</router-link></li>
-              <li><router-link to="/kits" class="dropdown-item"><i class="fa-solid fa-boxes-packing"></i> Kits</router-link></li>
-              <li v-if="authStore.user?.Rol === 'ADMIN'"><hr class="dropdown-divider"></li>
-              <li v-if="authStore.user?.Rol === 'ADMIN'">
-                <router-link to="/usuarios" class="dropdown-item text-primary"><i class="fa-solid fa-users"></i> Usuarios</router-link>
-              </li>
+              <li><router-link to="/articulos" class="dropdown-item"><i class="fa-solid fa-boxes-stacked me-1"></i> Artículos</router-link></li>
+              <li><router-link to="/proveedores" class="dropdown-item"><i class="fa-solid fa-truck me-1"></i> Proveedores</router-link></li>
+              <li><router-link to="/kits" class="dropdown-item"><i class="fa-solid fa-boxes-packing me-1"></i> Kits</router-link></li>
             </ul>
           </li>
 
@@ -43,8 +39,32 @@
               <i class="fa-solid fa-clipboard-list"></i> Historiales
             </a>
             <ul class="dropdown-menu border-0 shadow-sm">
-              <li><router-link to="/historial/ventas" class="dropdown-item text-success"><i class="fa-solid fa-shop"></i><i class="fa-regular fa-circle-left"></i> Ventas</router-link></li>
-              <li><router-link to="/historial/compras" class="dropdown-item text-danger"><i class="fa-solid fa-shop"></i><i class="fa-regular fa-circle-right"></i> Compras</router-link></li>
+              <li><router-link to="/historial/ventas" class="dropdown-item text-success"><i class="fa-solid fa-shop me-1"></i><i class="fa-regular fa-circle-left me-1"></i> Ventas</router-link></li>
+              <li><router-link to="/historial/compras" class="dropdown-item text-danger"><i class="fa-solid fa-shop me-1"></i><i class="fa-regular fa-circle-right me-1"></i> Compras</router-link></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown" v-if="authStore.user?.Rol === 'ADMIN'">
+            <a class="nav-link dropdown-toggle fw-bold text-primary" href="#" @click.prevent role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-gears"></i> Administración
+            </a>
+            <ul class="dropdown-menu border-0 shadow-sm">
+              <li>
+                <router-link to="/configuracion" class="dropdown-item">
+                    <i class="fa-solid fa-store me-1"></i> Datos de la Tienda
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/puntos-entrega" class="dropdown-item">
+                    <i class="fa-solid fa-map-location-dot me-1"></i> Puntos de Entrega
+                </router-link>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <router-link to="/usuarios" class="dropdown-item">
+                    <i class="fa-solid fa-users-gear me-1"></i> Gestión de Usuarios
+                </router-link>
+              </li>
             </ul>
           </li>
 
@@ -55,7 +75,7 @@
             Hola, <strong>{{ authStore.user?.Nombre || 'Usuario' }}</strong>
           </span>
           <button @click="handleLogout" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-            Cerrar Sesión
+            <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
           </button>
         </div>
       </div>
@@ -68,7 +88,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 import { Dropdown } from 'bootstrap';
-import logoImg from '@/assets/logo01.png';
+import logoImg from '@/assets/logo01.png'; 
 
 const authStore = useAuthStore();
 const router = useRouter();

@@ -1,9 +1,9 @@
-require('dotenv').config(); // Cargar variables de entorno del .env
+require('dotenv').config();
 const express = require('express');
-const http = require('http'); // Necesario para Socket.IO
+const http = require('http');
 
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes'); // Importamos las rutas de autenticación
+const authRoutes = require('./routes/authRoutes');
 const articuloRoutes = require('./routes/articuloRoutes'); 
 const movimientoRoutes = require('./routes/movimientoRoutes');
 const proveedorRoutes = require('./routes/proveedorRoutes');
@@ -12,6 +12,8 @@ const ventasRoutes = require('./routes/ventasRoutes');
 const combosRoutes = require('./routes/combosRoutes');
 const entradasRoutes = require('./routes/entradasRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const configRoutes = require('./routes/configRoutes');
+const puntosRoutes = require('./routes/puntosEntregaRoutes');
 
 const app = express();
 const server = http.createServer(app); // Creamos el servidor HTTP
@@ -32,6 +34,8 @@ app.use('/api/ventas', ventasRoutes);
 app.use('/api/combos', combosRoutes);
 app.use('/api/entradas', entradasRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/config', configRoutes);
+app.use('/api/puntos-entrega', puntosRoutes);
 
 // El manejador de conexiones está en socket.js
 

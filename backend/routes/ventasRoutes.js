@@ -6,15 +6,14 @@ const { protect } = require('../middlewares/authMiddleware');
 router.get('/', async (req, res) => {
     try {
         const query = `
-            SELECT 
-                v."IdVenta", 
-                v."Fecha", 
-                v."Total", 
-                v."Estado", 
-                COALESCE(u."Nombre", 'Vendedor no registrado') as "Vendedor"
-            FROM "Ventas" v
-            LEFT JOIN "Usuario" u ON v."IdUsuario" = u."IdUsuario"
-            ORDER BY v."Fecha" DESC
+            SELECT v."IdVenta", 
+                   v."Fecha", 
+                   v."Total", 
+                   v."Estado", 
+                   COALESCE(u."Nombre", 'Vendedor no registrado') as "Vendedor"
+                FROM "Ventas" v
+                LEFT JOIN "Usuario" u ON v."IdUsuario" = u."IdUsuario"
+                ORDER BY v."Fecha" DESC
         `;
         const result = await db.query(query);
         console.log("Ventas encontradas:", result.rows.length); 
@@ -28,16 +27,15 @@ router.get('/:id/detalles', async (req, res) => {
     try {
         const { id } = req.params;
         const query = `
-            SELECT 
-                dv."Cantidad",
-                dv."PrecioUnitario",
-                dv."Subtotal",
-                COALESCE(a."NomArticulo", c."Nombre", 'Producto Borrado') as "Producto",
-                CASE WHEN dv."IdCombo" IS NOT NULL THEN 'COMBO' ELSE 'ARTICULO' END as "Tipo"
-            FROM "DetalleVentas" dv
-            LEFT JOIN "Articulos" a ON dv."IdArticulo" = a."IdArticulo"
-            LEFT JOIN "Combos" c ON dv."IdCombo" = c."IdCombo"
-            WHERE dv."IdVenta" = $1
+            SELECT dv."Cantidad",
+                   dv."PrecioUnitario",
+                   dv."Subtotal",
+                   COALESCE(a."NomArticulo", c."Nombre", 'Producto Borrado') as "Producto",
+                   CASE WHEN dv."IdCombo" IS NOT NULL THEN 'COMBO' ELSE 'ARTICULO' END as "Tipo"
+                FROM "DetalleVentas" dv
+                LEFT JOIN "Articulos" a ON dv."IdArticulo" = a."IdArticulo"
+                LEFT JOIN "Combos" c ON dv."IdCombo" = c."IdCombo"
+                WHERE dv."IdVenta" = $1
         `;
         const result = await db.query(query, [id]);
         res.json(result.rows);
@@ -49,15 +47,15 @@ router.get('/:id/detalles', async (req, res) => {
 router.post('/', async (req, res) => {
     const client = await db.pool.connect();
     try {
-        const { idUsuario, total, productos } = req.body; 
+        const { idUsuario, total, productos, clienteNombre } = req.body;
 
         await client.query('BEGIN'); 
         const ventaQuery = `
-            INSERT INTO "Ventas" ("IdUsuario", "Total", "Fecha", "Estado")
-            VALUES ($1, $2, NOW(), 'COMPLETADA')
-            RETURNING "IdVenta";
+            INSERT INTO "Ventas" ("IdUsuario", "Total", "Fecha", "Estado", "ClienteNombre")
+                VALUES ($1, $2, NOW(), 'COMPLETADA', $3)
+                RETURNING "IdVenta";
         `;
-        const ventaResult = await client.query(ventaQuery, [idUsuario, total]);
+        const ventaResult = await client.query(ventaQuery, [idUsuario, total, clienteNombre || 'Público General']);
         const idVenta = ventaResult.rows[0].IdVenta;
         for (const item of productos) {
             const subtotal = item.cantidad * item.precio;
@@ -67,7 +65,7 @@ router.post('/', async (req, res) => {
                     [idVenta, item.id, item.cantidad, item.precio, subtotal]
                 );
                 const recetaRes = await client.query(
-                    `SELECT "IdArticulo", "Cantidad" FROM "DetalleCombos" WHERE "IdCombo" = $1`, 
+                    `SELECT "IdArticulo", "Cantidad" FROM "DetalleCombos" WHERE "IdCombo" = $1`,
                     [item.id]
                 );
                 for (const ing of recetaRes.rows) {

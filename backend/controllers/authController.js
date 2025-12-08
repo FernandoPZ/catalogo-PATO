@@ -21,12 +21,10 @@ exports.registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
         const result = await query(
-            `INSERT INTO "Usuario" (
-                "Nombre", "Email", "PasswordHash", "Rol", "FechaUltMod", 
-                "ClaUserMod", "NombrePcMod", "BajaLogica", "FechaCreacion"
-            ) 
-            VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7, NOW()) 
-            RETURNING *`,
+            `INSERT INTO "Usuario" ("Nombre", "Email", "PasswordHash", "Rol", "FechaUltMod", 
+                                    "ClaUserMod", "NombrePcMod", "BajaLogica", "FechaCreacion") 
+                VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7, NOW()) 
+                RETURNING *`,
             [nombre, email, passwordHash, 'ADMIN', ClaUserMod, NombrePcMod, BajaLogica]
         );
         res.status(201).json({ msg: 'Usuario registrado exitosamente', user: result.rows[0] });

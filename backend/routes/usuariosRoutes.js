@@ -41,9 +41,11 @@ router.put('/:id', async (req, res) => {
     try {
         const query = `
             UPDATE "Usuario"
-            SET "Nombre" = $1, "Email" = $2, "Rol" = $3
-            WHERE "IdUsuario" = $4
-            RETURNING *;
+                SET "Nombre" = $1,
+                    "Email" = $2,
+                    "Rol" = $3
+                WHERE "IdUsuario" = $4
+                RETURNING *;
         `;
 
         const updatedUser = await db.query(query, [nombre, email, rol, id]);
@@ -65,9 +67,9 @@ router.delete('/:id', async (req, res) => {
     try {
         const query = `
             UPDATE "Usuario"
-            SET "BajaLogica" = true
-            WHERE "IdUsuario" = $1
-            RETURNING *;
+                SET "BajaLogica" = true
+                WHERE "IdUsuario" = $1
+                RETURNING *;
         `;
 
         const result = await db.query(query, [id]);
@@ -87,9 +89,13 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const query = `
-            SELECT "IdUsuario", "Nombre", "Email", "Rol" 
-            FROM "Usuario" 
-            WHERE "IdUsuario" = $1 AND "BajaLogica" IS NOT true
+            SELECT "IdUsuario",
+                   "Nombre",
+                   "Email",
+                   "Rol" 
+                FROM "Usuario" 
+                WHERE "IdUsuario" = $1
+                AND "BajaLogica" IS NOT true
         `;
         const result = await db.query(query, [id]);
 
