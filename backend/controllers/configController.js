@@ -1,5 +1,5 @@
 const { pool } = require('../config/db');
-
+// 1. OBTENER CONFIGURACIÓN
 exports.getConfig = async (req, res) => {
     const client = await pool.connect();
     try {
@@ -12,7 +12,7 @@ exports.getConfig = async (req, res) => {
         client.release();
     }
 };
-
+// 2. ACTUALIZAR CONFIGURACIÓN
 exports.updateConfig = async (req, res) => {
     const { NombreTienda, Direccion, Telefono, MensajeTicket, RedSocial } = req.body;
     const client = await pool.connect();

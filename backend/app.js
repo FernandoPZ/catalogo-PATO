@@ -14,6 +14,7 @@ const entradasRoutes = require('./routes/entradasRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const configRoutes = require('./routes/configRoutes');
 const puntosRoutes = require('./routes/puntosEntregaRoutes');
+const bitacoraRoutes = require('./routes/bitacoraRoutes');
 
 const app = express();
 const server = http.createServer(app); // Creamos el servidor HTTP
@@ -36,6 +37,7 @@ app.use('/api/entradas', entradasRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/puntos-entrega', puntosRoutes);
+app.use('/api/bitacora', bitacoraRoutes);
 
 // El manejador de conexiones está en socket.js
 

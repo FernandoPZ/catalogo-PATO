@@ -1,6 +1,5 @@
 <template>
   <div class="container py-4 minimal-bg">
-    <!-- Navbar global ahora en App.vue -->
     <div class="row g-4">
       <div class="col-12 mx-auto">
         <div class="d-flex justify-content-between align-items-center mb-3">

@@ -1,5 +1,4 @@
 <template>
-  <!-- Navbar global ahora en App.vue -->
   <div class="container py-4 minimal-bg d-flex align-items-center justify-content-center" style="min-height: 80vh;">
     <div class="col-12 col-md-6 col-lg-4 mx-auto">
       <div class="card border-0 shadow-sm minimal-card">

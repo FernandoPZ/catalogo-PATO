@@ -1,10 +1,8 @@
 <template>
     <div class="container-fluid py-4 minimal-bg">
         <div class="row g-4">
-            
             <div class="col-12 col-md-7 col-lg-8">
                 <div class="card border-0 shadow-sm h-100 minimal-card">
-                    
                     <div class="card-header bg-white border-0 pt-3 pb-0">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="fw-bold mb-0">Catálogo</h5>
@@ -15,7 +13,6 @@
                                 placeholder="Buscar..."
                             >
                         </div>
-                        
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
                                 <a 
@@ -39,9 +36,7 @@
                             </li>
                         </ul>
                     </div>
-
                     <div class="card-body overflow-auto" style="max-height: 75vh;">
-                        
                         <div v-if="tabActiva === 'ARTICULOS'" class="row g-3">
                             <div v-for="articulo in articulosFiltrados" :key="articulo.IdArticulo" class="col-6 col-md-4 col-xl-3">
                                 <div class="card h-100 border-0 shadow-sm product-card" :class="{'opacity-50': articulo.StockActual === 0}">
@@ -61,7 +56,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div v-else class="row g-3">
                             <div v-if="combos.length === 0" class="col-12 text-center text-muted mt-5">
                                 No hay combos activos configurados.
@@ -88,20 +82,17 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-md-5 col-lg-4">
                 <div class="card border-0 shadow-sm h-100 minimal-card">
                     <div class="card-header bg-white border-0 py-3">
                         <h5 class="fw-bold mb-0">Ticket de Venta</h5>
                     </div>
                     <div class="card-body d-flex flex-column">
-                        
                         <div class="flex-grow-1 overflow-auto mb-3" style="max-height: 50vh;">
                             <div v-if="carrito.length === 0" class="text-center text-muted py-5">
                                 <p>El carrito está vacío</p>
                                 <small>Selecciona productos o combos</small>
                             </div>
-
                             <ul v-else class="list-group list-group-flush">
                                 <li v-for="(item, index) in carrito" :key="index" class="list-group-item px-0 py-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -124,20 +115,18 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-muted">Cliente (Opcional)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white"><i class="fa-solid fa-user"></i></span>
                                 <input 
-                                    v-model="clienteNombre" 
-                                    type="text" 
-                                    class="form-control minimal-input border-start-0" 
+                                    v-model="clienteNombre"
+                                    type="text"
+                                    class="form-control minimal-input border-start-0"
                                     placeholder="Público General"
                                 >
                             </div>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-muted">Punto de Entrega (QR)</label>
                             <select v-model="puntoSeleccionado" class="form-select minimal-input">
@@ -147,7 +136,6 @@
                                 </option>
                             </select>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-muted">Fecha de Entrega</label>
                             <div class="input-group">
@@ -159,7 +147,6 @@
                                 >
                             </div>
                         </div>
-
                         <div class="mt-auto border-top pt-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Subtotal:</span>
@@ -169,7 +156,6 @@
                                 <span class="fw-bold fs-4">Total:</span>
                                 <span class="fw-bold fs-4 text-primary">${{ totalVenta.toFixed(2) }}</span>
                             </div>
-                            
                             <button 
                                 class="btn btn-success w-100 py-3 fw-bold rounded-3 shadow-sm"
                                 :disabled="carrito.length === 0 || loadingVenta"
@@ -181,7 +167,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -211,6 +196,7 @@ const clienteNombre = ref("");
 const puntosEntrega = ref([]);
 const puntoSeleccionado = ref(null);
 const fechaEntrega = ref(new Date().toISOString().substr(0, 10));
+
 onMounted(async () => {
     cargarDatos();
 });
@@ -236,7 +222,6 @@ const articulosFiltrados = computed(() => {
 const combosFiltrados = computed(() => {
     return combos.value.filter(c => c.Nombre.toLowerCase().includes(busqueda.value.toLowerCase()));
 });
-
 const totalVenta = computed(() => {
     return carrito.value.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
 });
@@ -288,7 +273,7 @@ const eliminarDelCarrito = (index) => {
 const procesarVenta = async () => {
     if (!confirm(`¿Confirmar venta por $${totalVenta.value.toFixed(2)}?`)) return;
     if (!puntoSeleccionado.value) {
-         if(!confirm("¿Deseas continuar sin punto de entrega? (No saldrá QR)")) return;
+        if(!confirm("¿Deseas continuar sin punto de entrega? (No saldrá QR)")) return;
     }
 
     loadingVenta.value = true;

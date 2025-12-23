@@ -1,7 +1,5 @@
 <template>
     <div class="container py-4 minimal-bg">
-        <!-- Navbar global ahora en App.vue -->
-
         <div class="row g-4">
             <div class="col-12 col-lg-5 mx-auto">
                 <div class="card border-0 shadow-sm minimal-card">
@@ -45,7 +43,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-lg-7 mx-auto">
                 <h3 class="mb-3 fw-semibold">Historial de Movimientos</h3>
                 <div v-if="loadingHistorial" class="alert alert-info">Cargando historial...</div>
@@ -151,16 +148,12 @@ import articuloService from '@/services/articuloService';
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-// Datos del Formulario
 const form = reactive({
     IdArticulo: '',
     Cantidad: 1, 
     TipoMovimiento: '',
     Comentarios: ''
 });
-
-// Estado de la UI
 const articulos = ref([]); 
 const historial = ref([]);
 const isSaving = ref(false);
@@ -168,18 +161,14 @@ const loadingHistorial = ref(false);
 const movimientoMsg = ref(null);
 const movimientoError = ref(null);
 const historialError = ref(null);
-
-// Lógica de Carga de Artículos y Historial
 const loadData = async () => {
     loadingHistorial.value = true;
     historialError.value = null;
     historial.value = []; 
 
     try {
-        // 1. Cargar Artículos (para el dropdown del formulario)
         articulos.value = await articuloService.getArticulos(); 
         
-        // 2. Cargar Historial de Movimientos
         try {
             const movimientos = await articuloService.getMovimientos();
             historial.value = movimientos;
@@ -187,7 +176,6 @@ const loadData = async () => {
             console.warn("Error al cargar historial, posible tabla vacía.", err.response?.status);
             historial.value = []; 
         }
-
 
     } catch (err) {
         historialError.value = "Error al cargar los datos necesarios. (Verifique sesión y Backend)";
@@ -197,7 +185,6 @@ const loadData = async () => {
     }
 };
 
-// Manejo del Formulario de Movimiento
 const handleMovimiento = async () => {
     isSaving.value = true;
     movimientoMsg.value = null;
@@ -213,7 +200,6 @@ const handleMovimiento = async () => {
         if (form.Cantidad <= 0) {
             throw new Error("La cantidad debe ser mayor a cero.");
         }
-        // CONSTRUIMOS EL PAYLOAD COMPLETO
         const payload = {
             IdArticulo: form.IdArticulo,
             Cantidad: form.Cantidad, 
@@ -224,7 +210,6 @@ const handleMovimiento = async () => {
         await articuloService.registrarMovimiento(payload);
 
         movimientoMsg.value = `${form.TipoMovimiento} de ${form.Cantidad} unidades registrada con éxito.`;
-        // Limpiar formulario y recargar datos
         form.IdArticulo = '';
         form.Cantidad = 1; 
         form.TipoMovimiento = '';
@@ -238,7 +223,6 @@ const handleMovimiento = async () => {
     }
 };
 
-// Función para manejar el cierre de sesión
 const handleLogout = () => {
     authStore.logout();
     router.push({ name: 'Login' });

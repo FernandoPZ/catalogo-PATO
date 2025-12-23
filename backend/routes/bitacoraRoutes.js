@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const dashboardController = require('../controllers/dashboardController');
+const bitacoraController = require('../controllers/bitacoraController');
 const { protect } = require('../middlewares/authMiddleware');
 
-router.get('/', protect, dashboardController.getResumen);
+router.get('/', protect, bitacoraController.getBitacora);
 
 module.exports = router;

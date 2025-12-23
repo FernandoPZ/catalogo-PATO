@@ -1,7 +1,6 @@
 <template>
     <div class="container py-4 minimal-bg">
         <h4 class="fw-bold mb-4">{{ id ? 'Editar Kit' : 'Nuevo Kit de Productos' }}</h4>
-
         <div class="row g-4">
             <div class="col-md-5">
                 <div class="card border-0 shadow-sm minimal-card p-3">
@@ -25,7 +24,6 @@
                     <router-link to="/kits" class="btn btn-light w-100 mt-2">Cancelar</router-link>
                 </div>
             </div>
-
             <div class="col-md-7">
                 <div class="card border-0 shadow-sm minimal-card h-100">
                     <div class="card-header bg-white border-0 pt-3">
@@ -46,7 +44,6 @@
                             </button>
                         </div>
                     </div>
-
                     <div class="card-body overflow-auto" style="max-height: 400px;">
                         <table class="table align-middle">
                             <thead class="bg-light">
@@ -87,37 +84,30 @@ import comboService from '@/services/comboService';
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id;
-
 const form = ref({ Nombre: '', Codigo: '', Precio: 0, Ingredientes: [] });
 const articulos = ref([]);
 const busqueda = ref("");
 const loading = ref(false);
 
 onMounted(async () => {
-    // 1. Cargar catálogo de productos para el buscador
     articulos.value = await articuloService.getArticulos();
-
-    // 2. Si es edición, cargar datos del kit
     if (id) {
         const data = await comboService.getComboById(id);
         form.value = {
             Nombre: data.Nombre,
             Codigo: data.Codigo,
             Precio: Number(data.Precio),
-            Ingredientes: data.ingredientes // El backend nos manda esto
+            Ingredientes: data.ingredientes
         };
     }
 });
 
-// Filtro del buscador
 const articulosFiltrados = computed(() => {
     if (!busqueda.value) return [];
     return articulos.value.filter(a => a.NomArticulo.toLowerCase().includes(busqueda.value.toLowerCase()));
 });
 
-// Acciones
 const agregarIngrediente = (art) => {
-    // Verificar si ya está
     const existe = form.value.Ingredientes.find(i => i.IdArticulo === art.IdArticulo);
     if (existe) {
         existe.Cantidad++;
@@ -128,7 +118,7 @@ const agregarIngrediente = (art) => {
             Cantidad: 1
         });
     }
-    busqueda.value = ""; // Limpiar buscador
+    busqueda.value = "";
 };
 
 const quitarIngrediente = (index) => {
@@ -138,7 +128,6 @@ const quitarIngrediente = (index) => {
 const guardar = async () => {
     if (!form.value.Nombre || form.value.Precio <= 0) return alert("Nombre y Precio son obligatorios");
     if (form.value.Ingredientes.length === 0) return alert("El kit debe tener al menos un producto");
-
     loading.value = true;
     try {
         if (id) {

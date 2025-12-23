@@ -18,6 +18,7 @@ import HistorialVentas from '@/views/HistorialVentas.vue';
 import HistorialCompras from '@/views/HistorialCompras.vue';
 import ConfigTiendaView from '@/views/ConfigTiendaView.vue';
 import PuntosEntregaView from '@/views/PuntosEntregaView.vue';
+import BitacoraView from '@/views/BitacoraView.vue';
 
 const routes = [
   { path: '/', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
@@ -41,6 +42,7 @@ const routes = [
   { path: '/historial/compras', name: 'HistorialCompras', component: HistorialCompras, meta: { requiresAuth: true } },
   { path: '/configuracion', name: 'Configuracion', component: ConfigTiendaView, meta: { requiresAuth: true } },
   { path: '/puntos-entrega', component: PuntosEntregaView, meta: { requiresAuth: true } },
+  { path: '/bitacora', name: 'Bitacora', component: BitacoraView, meta: { requiresAuth: true } },
   { path: '/:catchAll(.*)', redirect: '/' },
 ];
 

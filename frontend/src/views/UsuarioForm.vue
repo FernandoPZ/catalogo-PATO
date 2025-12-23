@@ -41,7 +41,6 @@
                                     placeholder="••••••••"
                                 >
                             </div>
-
                             <div class="mb-4">
                                 <label class="form-label text-muted small fw-bold">Rol de Usuario</label>
                                 <select v-model="usuario.rol" class="form-select minimal-input" required>
@@ -51,7 +50,6 @@
                                     <option value="ALMACEN">Almacén (Inventario)</option>
                                 </select>
                             </div>
-
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="button" class="btn btn-light minimal-btn" @click="$router.push('/usuarios')">
                                     Cancelar
@@ -75,10 +73,7 @@ import usuarioService from '@/services/usuarioService';
 
 const route = useRoute();
 const router = useRouter();
-
-// Detectar si estamos editando (si hay un ID en la URL)
 const isEditing = computed(() => !!route.params.id);
-
 const loading = ref(false);
 const usuario = ref({
     nombre: '',
@@ -87,27 +82,22 @@ const usuario = ref({
     rol: ''
 });
 
-// Cargar datos si es edición
-// Cargar datos si es edición
 onMounted(async () => {
     if (isEditing.value) {
         loading.value = true;
         try {
-            // Usamos el ID de la URL (route.params.id)
             const data = await usuarioService.getUsuarioById(route.params.id);
             
-            // Llenamos el formulario con los datos que llegaron
-            // Ojo: La BD devuelve mayúsculas (Nombre), el form usa minúsculas (nombre)
             usuario.value = {
                 nombre: data.Nombre,
                 email: data.Email,
                 rol: data.Rol,
-                password: '' // La contraseña la dejamos vacía para no sobrescribirla
+                password: ''
             };
         } catch (error) {
             console.error(error);
             alert("Error al cargar los datos del usuario");
-            router.push('/usuarios'); // Si falla, nos regresamos a la lista
+            router.push('/usuarios');
         } finally {
             loading.value = false;
         }
@@ -118,15 +108,13 @@ const guardarUsuario = async () => {
     loading.value = true;
     try {
         if (isEditing.value) {
-            // Lógica de Actualizar
             await usuarioService.updateUsuario(route.params.id, usuario.value);
             alert('Usuario actualizado correctamente');
         } else {
-            // Lógica de Crear
             await usuarioService.createUsuario(usuario.value);
             alert('Usuario creado correctamente');
         }
-        router.push('/usuarios'); // Volver a la lista
+        router.push('/usuarios');
     } catch (error) {
         console.error(error);
         alert('Error al guardar el usuario');
@@ -137,7 +125,6 @@ const guardarUsuario = async () => {
 </script>
 
 <style scoped>
-/* Reutilizamos tus estilos minimalistas */
 .minimal-bg { background-color: #f8f9fa; min-height: 90vh; }
 .minimal-card { border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); }
 .minimal-input { border-radius: 8px; border: 1px solid #e2e8f0; padding: 0.6rem 1rem; }

@@ -1,18 +1,14 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4 px-3 minimal-card">
     <div class="container-fluid">
-      
       <router-link to="/" class="navbar-brand d-flex align-items-center py-0">
         <img :src="logoImg" alt="Logo" height="50" class="d-inline-block align-text-top">
       </router-link>
-
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarNav" v-if="authStore.isAuthenticated">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle fw-bold" href="#" @click.prevent role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa-solid fa-store"></i> Operaciones
@@ -22,7 +18,6 @@
               <li><router-link to="/entradas/nueva" class="dropdown-item"><i class="fa-solid fa-box-open me-1"></i> Resurtir (Compras)</router-link></li>
             </ul>
           </li>
-
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle fw-bold" href="#" @click.prevent role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa-solid fa-book-open"></i> Catálogos
@@ -33,7 +28,6 @@
               <li><router-link to="/kits" class="dropdown-item"><i class="fa-solid fa-boxes-packing me-1"></i> Kits</router-link></li>
             </ul>
           </li>
-
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle fw-bold" href="#" @click.prevent role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa-solid fa-clipboard-list"></i> Historiales
@@ -43,7 +37,6 @@
               <li><router-link to="/historial/compras" class="dropdown-item text-danger"><i class="fa-solid fa-shop me-1"></i><i class="fa-regular fa-circle-right me-1"></i> Compras</router-link></li>
             </ul>
           </li>
-
           <li class="nav-item dropdown" v-if="authStore.user?.Rol === 'ADMIN'">
             <a class="nav-link dropdown-toggle fw-bold text-primary" href="#" @click.prevent role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-gears"></i> Administración
@@ -65,15 +58,22 @@
                     <i class="fa-solid fa-users-gear me-1"></i> Gestión de Usuarios
                 </router-link>
               </li>
+              <li>
+                  <router-link to="/bitacora" class="dropdown-item">
+                      <i class="fa-solid fa-list-check me-1"></i> Bitácora
+                  </router-link>
+              </li>
             </ul>
           </li>
-
         </ul>
-
         <div class="d-flex align-items-center">
           <span class="text-muted me-3 d-none d-lg-block">
             Hola, <strong>{{ authStore.user?.Nombre || 'Usuario' }}</strong>
           </span>
+          <button @click="themeStore.toggleTheme()" class="btn btn-link nav-link me-3 text-secondary">
+              <i v-if="themeStore.theme === 'light'" class="fa-solid fa-moon fs-5"></i>
+              <i v-else class="fa-solid fa-sun fs-5 text-warning"></i>
+          </button>
           <button @click="handleLogout" class="btn btn-outline-danger btn-sm rounded-pill px-3">
             <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
           </button>
@@ -88,10 +88,12 @@ import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 import { Dropdown } from 'bootstrap';
-import logoImg from '@/assets/logo01.png'; 
+import logoImg from '@/assets/logo01.png';
+import { useThemeStore } from '@/stores/theme';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const themeStore = useThemeStore();
 
 onMounted(() => {
   const dropdownElementList = document.querySelectorAll('.dropdown-toggle');

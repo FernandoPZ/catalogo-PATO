@@ -1,5 +1,5 @@
 const { pool } = require('../config/db');
-
+// 1. OBTENER PROVEEDORES
 exports.getProveedores = async (req, res) => {
   const client = await pool.connect();
   try {
@@ -14,6 +14,7 @@ exports.getProveedores = async (req, res) => {
     client.release();
   }
 };
+// 2. OBTENER UN PROVEEDOR POR ID
 exports.getProveedorById = async (req, res) => {
     const { id } = req.params;
     const client = await pool.connect();
@@ -35,6 +36,7 @@ exports.getProveedorById = async (req, res) => {
         client.release();
     }
 };
+// 3. CREAR PROVEEDOR
 exports.createProveedor = async (req, res) => {
   const { NomProveedor, RFC } = req.body;
   const idUsuarioLogueado = req.user.IdUsuario; 
@@ -59,6 +61,7 @@ exports.createProveedor = async (req, res) => {
     client.release();
   }
 };
+// 4. ACTUALIZAR PROVEEDOR
 exports.updateProveedor = async (req, res) => {
   const { id } = req.params;
   const { NomProveedor, RFC } = req.body;
@@ -86,6 +89,7 @@ exports.updateProveedor = async (req, res) => {
     client.release();
   }
 };
+// 5. ELIMINAR PROVEEDOR (BAJA LÓGICA)
 exports.deleteProveedor = async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();

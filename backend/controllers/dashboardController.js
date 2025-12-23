@@ -1,22 +1,22 @@
 const { pool } = require('../config/db');
-
+// 1. OBTENER RESUMEN DEL DASHBOARD
 exports.getResumen = async (req, res) => {
     const client = await pool.connect();
     try {
         const ventasQuery = `
-            SELECT COALESCE(SUM("Total"), 0) as total 
-                FROM "Ventas" 
+            SELECT COALESCE(SUM("Total"), 0) as total
+                FROM "Ventas"
                 WHERE DATE("Fecha") = CURRENT_DATE
         `;
         const comprasQuery = `
-            SELECT COALESCE(SUM("Total"), 0) as total 
-                FROM "Entradas" 
+            SELECT COALESCE(SUM("Total"), 0) as total
+                FROM "Entradas"
                 WHERE DATE("Fecha") = CURRENT_DATE
         `;
         const stockBajoQuery = `
             SELECT "NomArticulo",
-                   "StockActual" 
-                FROM "Articulos" 
+                   "StockActual"
+                FROM "Articulos"
                 WHERE "StockActual" <= 5 AND "BajaLogica" IS NOT TRUE
                 LIMIT 5
         `;

@@ -1,5 +1,4 @@
 const { pool } = require('../config/db');
-
 // Obtener puntos activos
 exports.getPuntos = async (req, res) => {
     const client = await pool.connect();
@@ -12,7 +11,6 @@ exports.getPuntos = async (req, res) => {
         client.release();
     }
 };
-
 // Crear punto
 exports.createPunto = async (req, res) => {
     const { NombrePunto, LinkGoogleMaps } = req.body;
@@ -29,7 +27,6 @@ exports.createPunto = async (req, res) => {
         client.release();
     }
 };
-
 // Eliminar (Desactivar)
 exports.deletePunto = async (req, res) => {
     const { id } = req.params;

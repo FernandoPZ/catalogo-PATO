@@ -1,6 +1,5 @@
 <template>
     <div class="container py-4 minimal-bg">
-        
         <div class="row g-4">
             <div class="col-12 mx-auto">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -9,10 +8,8 @@
                         + Nuevo Usuario
                     </router-link>
                 </div>
-
                 <div v-if="loading" class="alert alert-info">Cargando usuarios...</div>
                 <div v-if="error" class="alert alert-danger">Error: {{ error }}</div>
-
                 <div class="table-responsive minimal-table-wrapper">
                     <table class="table table-borderless align-middle minimal-table">
                         <thead>

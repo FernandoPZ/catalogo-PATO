@@ -1,5 +1,5 @@
 const { pool } = require('../config/db');
-
+// 1. OBTENER COMBOS
 exports.getCombos = async (req, res) => {
     const client = await pool.connect();
     try {
@@ -22,6 +22,7 @@ exports.getCombos = async (req, res) => {
         client.release();
     }
 };
+// 2. OBTENER UN COMBO POR ID
 exports.getComboById = async (req, res) => {
     const { id } = req.params;
     const client = await pool.connect();
@@ -45,6 +46,7 @@ exports.getComboById = async (req, res) => {
         client.release();
     }
 };
+// 3. CREAR COMBO
 exports.createCombo = async (req, res) => {
     const { Nombre, Codigo, Precio, Ingredientes } = req.body;
     const IdUsuario = req.user.IdUsuario; 
@@ -74,6 +76,7 @@ exports.createCombo = async (req, res) => {
         client.release();
     }
 };
+// 4. ACTUALIZAR COMBO
 exports.updateCombo = async (req, res) => {
     const { id } = req.params;
     const { Nombre, Codigo, Precio, Ingredientes } = req.body;
@@ -108,6 +111,7 @@ exports.updateCombo = async (req, res) => {
         client.release();
     }
 };
+// 5. ELIMINAR COMBO (DESACTIVAR)
 exports.deleteCombo = async (req, res) => {
     const { id } = req.params;
     const client = await pool.connect();

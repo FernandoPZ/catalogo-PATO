@@ -13,16 +13,13 @@ const cargarImagen = (src) => {
 };
 
 export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, logoTopSrc, watermarkSrc, redSocialSrc, configTienda, nombreCliente, linkMaps, fechaEntrega) => {
-    
     const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: [80, 200]
     });
-
     const centerX = 40;
     let yPos = 5;
-
     const [imgTop, imgWatermark, imgRedSocial] = await Promise.all([
         cargarImagen(logoTopSrc),
         cargarImagen(watermarkSrc),
@@ -49,7 +46,6 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
             yPos += lAlto + 5; 
         } catch (e) { console.error(e); }
     }
-
     // --- CABECERA TIENDA ---
     if (!imgTop) {
         doc.setFontSize(12);
@@ -59,14 +55,12 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
     }
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    
     // Dirección
     if (configTienda?.Direccion) {
         const direLines = doc.splitTextToSize(configTienda.Direccion, 70);
         doc.text(direLines, centerX, yPos, { align: "center" });
         yPos += (direLines.length * 4); 
     }
-
     // Red Social
     if (configTienda?.RedSocial) {
         const textoRed = configTienda.RedSocial;
@@ -82,24 +76,20 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
         }
         yPos += 5;
     }
-
     // Teléfono
     if (configTienda?.Telefono) {
         doc.text(`Tel: ${configTienda.Telefono}`, centerX, yPos, { align: "center" });
         yPos += 4;
     }
-
     doc.text("--------------------------------", centerX, yPos, { align: "center" });
     yPos += 5;
     // --- DATOS VENTA ---
     doc.text(`Folio: #${ventaId}`, 5, yPos);
     yPos += 4;
-    
     // 1. FECHA DE EMISIÓN (Hoy)
     const fechaEmision = new Date().toLocaleString(); // Fecha y hora actual
     doc.text(`Emisión: ${fechaEmision}`, 5, yPos);
     yPos += 4;
-
     // 2. FECHA DE ENTREGA (La que seleccionaste)
     if (fechaEntrega) {
         // Formatear un poco la fecha (AAAA-MM-DD -> DD/MM/AAAA)
@@ -109,12 +99,10 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
         doc.setFont("helvetica", "normal"); // Volver a normal
         yPos += 4;
     }
-
     doc.text(`Cliente: ${nombreCliente || 'Público General'}`, 5, yPos);
     yPos += 4;
     doc.text(`Le atendió: ${usuarioNombre}`, 5, yPos);
     yPos += 2;
-
     // --- TABLA DE PRODUCTOS ---
     const columnas = ["Cant", "Prod", "P.U.", "Total"];
     const filas = carrito.map(item => [
@@ -143,9 +131,7 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.text(`TOTAL: $${total.toFixed(2)}`, 76, finalY, { align: "right" });
-
     let yPie = finalY + 15;
-
     // --- CÓDIGO QR ---
     if (linkMaps) {
         try {
@@ -161,12 +147,10 @@ export const generarTicketPDF = async (ventaId, usuarioNombre, carrito, total, l
             yPie += qrSize + 5; 
         } catch (err) { console.error(err); }
     }
-
     // --- MENSAJE FINAL ---
     doc.setFontSize(8);
     doc.setFont("helvetica", "italic");
     doc.text(configTienda?.MensajeTicket || "¡Gracias!", centerX, yPie, { align: "center" });
-
     doc.save(`Ticket_${ventaId}.pdf`);
     window.open(doc.output('bloburl'), '_blank');
 };

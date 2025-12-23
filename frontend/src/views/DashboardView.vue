@@ -1,7 +1,6 @@
 <template>
     <div class="container py-4 minimal-bg">
         <h3 class="fw-bold mb-4">Tablero de Control</h3>
-
         <div class="row g-4 mb-4">
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm minimal-card bg-primary text-white h-100">
@@ -33,7 +32,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm minimal-card h-100">
@@ -55,7 +53,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm minimal-card h-100">
                     <div class="card-header bg-white border-0 py-3">

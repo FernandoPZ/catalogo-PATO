@@ -3,7 +3,6 @@
         <h3 class="fw-bold mb-4 text-success">
             <i class="fa-solid fa-cash-register me-2"></i>Historial de Ventas
         </h3>
-
         <div class="card border-0 shadow-sm minimal-card">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -36,7 +35,6 @@
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr v-if="venta.expandido">
                                     <td colspan="5" class="p-0 bg-light">
                                         <div class="p-3">

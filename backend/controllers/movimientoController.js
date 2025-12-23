@@ -1,3 +1,4 @@
+// 1. OBTENER HISTORIAL DE MOVIMIENTOS
 exports.getHistorialMovimientos = async (req, res) => {
     const client = await pool.connect();
     try {
@@ -41,6 +42,7 @@ const getUserInfo = (req) => {
     return { ClaUserMod, NombrePcMod };
 };
 const isNumeric = (val) => !isNaN(parseFloat(val)) && isFinite(val);
+// 2. ENTRADA DE INSUMO
 exports.entradaInsumo = async (req, res) => {
     const { IdArticulo, Cantidad, Comentarios } = req.body;
     const { ClaUserMod, NombrePcMod } = getUserInfo(req);
@@ -101,6 +103,7 @@ exports.entradaInsumo = async (req, res) => {
         client.release();
     }
 };
+// 3. SALIDA DE INSUMO
 exports.salidaInsumo = async (req, res) => {
     const { IdArticulo, Cantidad, Comentarios } = req.body;
     const { ClaUserMod, NombrePcMod } = getUserInfo(req);
@@ -144,7 +147,7 @@ exports.salidaInsumo = async (req, res) => {
                 SET "StockActual" = $1,
                     "FechaUltMod" = NOW(),
                     "ClaUserMod" = $2,
-                    "NombrePcMod" = $3 
+                    "NombrePcMod" = $3
                 WHERE "IdArticulo" = $4`,
             [nuevoStock, ClaUserMod, NombrePcMod, IdArticulo]
         );

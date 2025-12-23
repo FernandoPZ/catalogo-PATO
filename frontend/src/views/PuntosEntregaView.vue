@@ -1,7 +1,6 @@
 <template>
     <div class="container py-4 minimal-bg">
         <h3 class="fw-bold mb-4"><i class="fa-solid fa-map-location-dot me-2"></i>Puntos de Entrega</h3>
-
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="card border-0 shadow-sm minimal-card">
@@ -22,7 +21,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm minimal-card">
                     <div class="card-body p-0">

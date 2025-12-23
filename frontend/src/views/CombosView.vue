@@ -6,7 +6,6 @@
                 + Nuevo Kit
             </router-link>
         </div>
-
         <div class="row g-4">
             <div v-for="kit in kits" :key="kit.IdCombo" class="col-md-4">
                 <div class="card border-0 shadow-sm h-100 minimal-card">
@@ -16,7 +15,6 @@
                             <span class="badge bg-success">${{ Number(kit.Precio).toFixed(2) }}</span>
                         </div>
                         <p class="text-muted small mb-3">Código: {{ kit.Codigo || 'S/N' }}</p>
-                        
                         <div class="d-flex gap-2 mt-3">
                             <router-link :to="`/kits/editar/${kit.IdCombo}`" class="btn btn-sm btn-outline-info w-100">
                                 <i class="fas fa-edit"></i> Editar
@@ -40,13 +38,11 @@ import { ref, onMounted } from 'vue';
 import comboService from '@/services/comboService';
 
 const kits = ref([]);
-
 const cargar = async () => {
     try {
         kits.value = await comboService.getCombos();
     } catch (error) { console.error(error); }
 };
-
 const eliminar = async (kit) => {
     if(confirm(`¿Desactivar el kit "${kit.Nombre}"?`)) {
         await comboService.deleteCombo(kit.IdCombo);

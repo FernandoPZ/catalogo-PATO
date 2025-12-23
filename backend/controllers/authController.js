@@ -1,7 +1,8 @@
+const { registrarAccion } = require('../utils/logger');
 const { query } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+// 1. REGISTRAR USUARIO
 exports.registerUser = async (req, res) => {
     const { nombre, email, password } = req.body;
     const ClaUserMod = 1; 
@@ -36,6 +37,7 @@ exports.registerUser = async (req, res) => {
         res.status(500).json({ msg: 'Error interno del servidor.' });
     }
 };
+// 2. LOGIN USUARIO
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -64,6 +66,7 @@ exports.loginUser = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '8h' }
         );
+        await registrarAccion(user.IdUsuario, 'LOGIN', 'El usuario inició sesión en el sistema');
         res.json({
             token,
             user: {
